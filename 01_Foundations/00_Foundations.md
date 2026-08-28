@@ -9,7 +9,6 @@ what a measurement does.
 | [[Tensor_Products]] | Combining two qubits, the $r,s,t,u$ amplitudes, normalization |
 | [[Entanglement_Criterion]] | The $ru$ vs $st$ test, worked separable example |
 | [[Measurement_and_Perspective]] | Grouping by Alice or by Bob, conditional collapse |
-| [[Real_vs_Complex_Amplitudes]] | What the real-amplitude simplification costs, and when to drop it |
 
 ## Reading order
 
@@ -17,7 +16,11 @@ what a measurement does.
 2. [[Tensor_Products]] — how two one-qubit states become one two-qubit state.
 3. [[Entanglement_Criterion]] — when that process cannot be run backwards.
 4. [[Measurement_and_Perspective]] — what entanglement means operationally.
-5. [[Real_vs_Complex_Amplitudes]] — read once, then carry the four habits at the end of it into every later note.
+
+> [!note] These notes use **real** probability amplitudes
+> That is a deliberate simplification, not a gap — real-amplitude quantum computing
+> is computationally universal. What it costs, and when to drop it, is parked in
+> [[Real_vs_Complex_Amplitudes]] under [[00_TODO|99_TODO]].
 
 ## Key results
 
