@@ -1,7 +1,7 @@
 # Quantum Teleportation
 
 The protocol that can transfer **1 qubit** by physically transferring **2 classical
-bits**. It is the opposite of [[Superdense_Coding]]: there, Bob applies the reverse
+bits**. It is the opposite of [Superdense_Coding](Superdense_Coding.md): there, Bob applies the reverse
 Bell circuit and Alice applies the gate; here, **Alice applies the reverse Bell
 circuit and Bob applies the gate**.
 
@@ -29,7 +29,7 @@ $$\tfrac{1}{\sqrt2}|00\rangle + \tfrac{1}{\sqrt2}|11\rangle$$
 
 ## Circuit — Alice's side
 
-![[circuit_teleportation.png|760]]
+<img src="../_assets/circuit_teleportation.png" width="760" alt="circuit teleportation">
 
 The `psi` wire carries $a|0\rangle + b|1\rangle$; `alice` and `bob` start as the shared pair. Alice's part is everything left of the second barrier.
 
@@ -131,4 +131,4 @@ print(qc.draw())
 
 ---
 
-Compare with the forward direction: [[Superdense_Coding]].
+Compare with the forward direction: [Superdense_Coding](Superdense_Coding.md).

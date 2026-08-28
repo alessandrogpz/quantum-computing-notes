@@ -1,6 +1,6 @@
 # Entanglement Criterion
 
-Given a two-qubit state written in the amplitudes of [[Tensor_Products]]:
+Given a two-qubit state written in the amplitudes of [Tensor_Products](Tensor_Products.md):
 
 $$r\,|a_0\rangle|b_0\rangle + s\,|a_0\rangle|b_1\rangle + t\,|a_1\rangle|b_0\rangle + u\,|a_1\rangle|b_1\rangle$$
 
@@ -61,4 +61,4 @@ $$r = \tfrac12, \quad s = \tfrac12, \quad t = \tfrac{1}{\sqrt2}, \quad u = 0$$
 Check normalization: $\tfrac14 + \tfrac14 + \tfrac12 + 0 = 1$ ✓
 Check the criterion: $ru = 0$, $st = \tfrac{1}{2\sqrt2}$ → $ru \neq st$ → **entangled**.
 
-See [[Measurement_and_Perspective]] for what happens when this state is measured.
+See [Measurement_and_Perspective](Measurement_and_Perspective.md) for what happens when this state is measured.

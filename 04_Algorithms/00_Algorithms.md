@@ -4,16 +4,16 @@ Quantum algorithms, each with a runnable Qiskit implementation beside the note.
 
 | Note | Code | Does what |
 | :--- | :--- | :--- |
-| [[Shors_Algorithm]] | [`shors_15.py`](shors_15.py) | factors $N = 15$ into $3 \times 5$ by period-finding, simulated exactly |
-| [[Shors_Algorithm#Running it on real IBM hardware\|↳ on hardware]] | [`shors_15_ibm.py`](shors_15_ibm.py) | the same circuit transpiled and submitted to an IBM device |
+| [Shors_Algorithm](Shors_Algorithm.md) | [`shors_15.py`](shors_15.py) | factors $N = 15$ into $3 \times 5$ by period-finding, simulated exactly |
+| [↳ on hardware](Shors_Algorithm.md#running-it-on-real-ibm-hardware) | [`shors_15_ibm.py`](shors_15_ibm.py) | the same circuit transpiled and submitted to an IBM device |
 
 ## The line where complex amplitudes become mandatory
 
 The rest of this vault uses **real** probability amplitudes (see
-[[Real_vs_Complex_Amplitudes]]). That works through entanglement, teleportation,
+[Real_vs_Complex_Amplitudes](../99_TODO/Real_vs_Complex_Amplitudes.md)). That works through entanglement, teleportation,
 superdense coding and Grover's search.
 
-It stops here. [[Shors_Algorithm]] is built on the quantum Fourier transform, whose
+It stops here. [Shors_Algorithm](Shors_Algorithm.md) is built on the quantum Fourier transform, whose
 phases $e^{-i\pi/2^k}$ have no real-valued form. Anything in this folder built on
 the QFT — phase estimation, order finding, Shor — needs $i$.
 

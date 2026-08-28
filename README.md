@@ -12,9 +12,11 @@ Primary source: *Quantum Computing for Everyone* — Chris Bernhardt.
 ```text
 quantum-comp-notes/
 ├── _assets/          generated circuit figures (do not edit by hand)
+├── RUNNING.md             how to run the scripts
 ├── .env.example           template for IBM credentials (.env is gitignored)
 ├── _scripts/
 │   ├── build_figures.py   regenerates everything in _assets/
+│   ├── check_links.py     verifies every link resolves
 │   └── ibm_account.py     loads IBM credentials from .env
 ├── 01_Foundations/
 │   ├── Dirac_Notation.md
@@ -106,47 +108,16 @@ Obsidian settings in `.obsidian/` are committed too, except `workspace.json`
 
 ## Running Things
 
-`python somefile.py` will **not** work — your system Python has no qiskit. The
-packages live in `.venv/` inside this folder, and something has to point at them.
-Two ways; pick one and stick to it.
-
-### A. Prefix with `uv run` (nothing to remember)
+`python somefile.py` will not work — your system Python has no qiskit. Prefix with
+`uv run`, which uses the project's own environment:
 
 ```bash
 uv run python 04_Algorithms/shors_15.py
 ```
 
-`uv run` means "run this with the project's Python". It also checks the
-environment matches `uv.lock` first and fixes it if not, so it always works, even
-on a fresh clone with no `.venv` at all.
-
-### B. Activate once per terminal, then plain `python`
-
-```bash
-source .venv/bin/activate.fish
-python 04_Algorithms/shors_15.py
-```
-
-After that `python` *means* the project's Python in that terminal, and the `uv run`
-prefix is unnecessary. It lasts until you close the terminal; `deactivate` ends it
-early. (In bash/zsh the file is `.venv/bin/activate` instead.)
-
-Use A in docs and scripts because it cannot be forgotten. Use B while working, if
-typing the prefix gets old.
-
-### The commands in this vault
-
-```bash
-uv run python 04_Algorithms/shors_15.py              # factor 15, simulated
-uv run python 04_Algorithms/shors_15_ibm.py          # what a hardware run would cost
-uv run python 04_Algorithms/shors_15_ibm.py --submit # really queue an IBM job
-uv run python _scripts/ibm_account.py                # check credentials are readable
-uv run python _scripts/build_figures.py              # rebuild circuit figures
-uv run python _scripts/build_figures.py --check      # have the figures drifted?
-```
-
-Every script takes `--help`. None of them care which directory you are in — paths
-are resolved relative to the file, not your shell.
+Or activate once per terminal (`source .venv/bin/activate.fish`) and drop the
+prefix. Full command list, dependency management and troubleshooting:
+**[RUNNING.md](RUNNING.md)**.
 
 ## IBM Quantum Credentials
 

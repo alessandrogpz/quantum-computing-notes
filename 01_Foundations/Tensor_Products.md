@@ -58,5 +58,5 @@ The shorthand $|00\rangle$ means $|0\rangle \otimes |0\rangle$.
 
 ---
 
-Next: [[Entanglement_Criterion]] — when a two-qubit state *cannot* be written as a
+Next: [Entanglement_Criterion](Entanglement_Criterion.md) — when a two-qubit state *cannot* be written as a
 tensor product.

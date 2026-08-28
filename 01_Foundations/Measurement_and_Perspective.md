@@ -1,6 +1,6 @@
 # Measurement and Perspective
 
-Continues the entangled example from [[Entanglement_Criterion]]:
+Continues the entangled example from [Entanglement_Criterion](Entanglement_Criterion.md):
 
 $$r = \tfrac12, \quad s = \tfrac12, \quad t = \tfrac{1}{\sqrt2}, \quad u = 0$$
 

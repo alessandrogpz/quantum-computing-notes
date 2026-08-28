@@ -1,6 +1,6 @@
 # From Classical to Quantum Gates
 
-The gates in [[Reversible_Classical_Gates]] (CNOT, CCNOT, CSWAP) can also be
+The gates in [Reversible_Classical_Gates](Reversible_Classical_Gates.md) (CNOT, CCNOT, CSWAP) can also be
 applied in traditional computing. From here on the gates are for **quantum
 computing**, so a few things need defining first.
 
@@ -11,7 +11,7 @@ computing**, so a few things need defining first.
 - Qubits have the form $a_0|0\rangle + a_1|1\rangle$ with $a_0^2 + a_1^2 = 1$;
   $a_0$ and $a_1$ are probability amplitudes.
 - Usually the system has more than one qubit. For a 2-qubit system the basis is the
-  tensor product of the standard basis with itself (see [[Tensor_Products]]):
+  tensor product of the standard basis with itself (see [Tensor_Products](../01_Foundations/Tensor_Products.md)):
 
 $$\big(|0\rangle|0\rangle,\; |0\rangle|1\rangle,\; |1\rangle|0\rangle,\; |1\rangle|1\rangle\big) = \big(|00\rangle,\; |01\rangle,\; |10\rangle,\; |11\rangle\big)$$
 
@@ -36,7 +36,7 @@ A wire on the right of a diagram does **not** always carry a state of its own.
 Take: top qubit $\tfrac{1}{\sqrt2}|0\rangle + \tfrac{1}{\sqrt2}|1\rangle$,
 bottom qubit $|0\rangle$.
 
-![[circuit_bell_prep.png|300]]
+<img src="../_assets/circuit_bell_prep.png" width="300" alt="circuit bell prep">
 
 *(qubit 0 = top wire, put into superposition by $H$; qubit 1 = target.)*
 
@@ -48,7 +48,7 @@ CNOT acts on each basis vector separately, so this is sent to:
 
 $$\tfrac{1}{\sqrt2}|00\rangle + \tfrac{1}{\sqrt2}|11\rangle$$
 
-This is an **entangled state** ($ru \neq st$ — see [[Entanglement_Criterion]]).
+This is an **entangled state** ($ru \neq st$ — see [Entanglement_Criterion](../01_Foundations/Entanglement_Criterion.md)).
 We cannot assign individual states to the top and bottom wires on the right side;
 the correct way to label the diagram is with one brace over both outputs:
 
@@ -58,8 +58,8 @@ the correct way to label the diagram is with one brace over both outputs:
               |0⟩ ──────⊕──────  ⎭
 ```
 
-This state is the one used as the starting resource in [[Superdense_Coding]] and
-[[Quantum_Teleportation]].
+This state is the one used as the starting resource in [Superdense_Coding](../03_Protocols/Superdense_Coding.md) and
+[Quantum_Teleportation](../03_Protocols/Quantum_Teleportation.md).
 
 ## In Qiskit
 
