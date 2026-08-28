@@ -155,12 +155,13 @@ Three independent knobs, in the order you should reach for them:
 
 | Knob | Where | Regenerate? | Use it when |
 | :--- | :--- | :-: | :--- |
-| **Display width** | the `\|480` in the embed, e.g. `![[gate_cnot.png\|300]]` | no | a figure is too big or small in a note |
+| **Display width** | the `width` attribute, e.g. `<img src="../_assets/gate_cnot.png" width="300">` | no | a figure is too big or small in a note |
 | **Scale** | `width=`/`scale=` in `@figure(...)`, or `--scale` | yes | gate boxes feel cramped or sparse |
 | **DPI** | `DPI` in the script, or `--dpi` | yes | it looks soft when zoomed, or files are too heavy |
 
-Display width is the one you want almost every time — edit the number after the
-`|` directly in the note and Obsidian rescales on the spot, no rebuild.
+Display width is the one you want almost every time — edit the `width` attribute
+directly in the note and it rescales on the spot, no rebuild. Obsidian and GitHub
+both honour it.
 
 ```bash
 uv run python _scripts/build_figures.py --only teleport --scale 1.4
