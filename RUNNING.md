@@ -93,6 +93,19 @@ change every image in the vault:
 uv run python _scripts/build_figures.py --check
 ```
 
+## Checking IBM credentials
+
+```bash
+uv run python _scripts/ibm_account.py
+```
+
+Prints a **masked** token, the channel and the instance, so it is safe to run in
+front of anyone. If IBM rejects the credentials, the loader translates the error
+into what to actually do rather than raising a stack trace.
+
+A key point when this fails: if IBM answers at all, `.env` is working. Reaching
+IBM and being rejected is an *account* problem, not a local one.
+
 ## When something goes wrong
 
 | Symptom | Fix |
@@ -102,6 +115,9 @@ uv run python _scripts/build_figures.py --check
 | `No credentials file at .../.env` | `cp .env.example .env` and paste your token in |
 | Wrong Python version | `rm -rf .venv` then `uv sync`; `.python-version` pins it |
 | `.venv` seems broken | Delete it. The next `uv run` rebuilds it from the lock |
+| `Provided API key is disabled` | Account-side, not local. Create a new key at [cloud.ibm.com/iam/apikeys](https://cloud.ibm.com/iam/apikeys) |
+| `Unable to retrieve instances` | Usually the same thing — read the error above it, that one is the real cause |
+| `InvalidAccountError` | Run `uv run python _scripts/ibm_account.py` for a plain-language diagnosis |
 
 Deleting `.venv/` is always safe — it is a build output, gitignored, and rebuilt
 from `pyproject.toml` + `uv.lock` in seconds.
