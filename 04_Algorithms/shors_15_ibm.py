@@ -157,6 +157,25 @@ def verify_quantum(counts: dict[str, int], a: int, n_count: int) -> None:
     sigma = (baseline * (1 - baseline) / total) ** 0.5
     z = (frac - baseline) / sigma if sigma else 0.0
     print(f"  excess            {frac - baseline:+.1%}  ({z:.1f} sigma)")
+
+    # Back out the fidelity the data implies: f*1 + (1-f)*baseline = frac.
+    eff = (frac - baseline) / (1 - baseline)
+    print(f"  implied fidelity  {eff:.1%} of shots were coherent")
+
+    # Uniform depolarising noise spreads evenly. If instead the errors pile onto
+    # one output bit, a single qubit or its readout is the culprit, which is a
+    # far more fixable problem than "the circuit is too deep".
+    n_bits = len(next(iter(counts)))
+    ideal_bit = [{k[i] for k in support} for i in range(n_bits)]
+    print("\n  error by output bit (leftmost first):")
+    for i in range(n_bits):
+        ones = sum(v for k, v in counts.items() if k[i] == "1") / total
+        if len(ideal_bit[i]) == 1:                      # this bit is fixed ideally
+            want = float(ideal_bit[i].pop())
+            print(f"    bit {i}: P(1) = {ones:5.1%}   should be {want:.0%}"
+                  f"   {'<-- RANDOMISED' if abs(ones - want) > 0.35 else ''}")
+        else:
+            print(f"    bit {i}: P(1) = {ones:5.1%}   should be ~50% (free)")
     if z > 5:
         print("\n  Decisive: far more concentrated than noise could explain.")
     elif z > 3:
@@ -182,21 +201,35 @@ def verify_answer(a: int, r: int, f1: int, f2: int) -> bool:
 
 def analyse(counts: dict[str, int], a: int, n_count: int) -> int | None:
     """Identical post-processing to the simulator version."""
-    print(f"\n  {'measured':>12}  {'phase':>8}  {'~ s/r':>7}  {'r':>3}  {'valid':>5}  shots")
+    support = ideal_support(a, n_count)
+    print(f"\n  {'measured':>12}  {'phase':>8}  {'~ s/r':>7}  {'r':>3}  {'a^r=1':>6}  "
+          f"{'ideal':>6}  shots")
     candidates: dict[int, int] = {}
-    for bits, n in sorted(counts.items(), key=lambda kv: -kv[1])[:12]:
+    signal = 0
+    for bits, n in sorted(counts.items(), key=lambda kv: -kv[1])[:16]:
         phase = int(bits, 2) / 2**n_count
         frac = Fraction(phase).limit_denominator(N)
         r = frac.denominator
         ok = r > 1 and pow(a, r, N) == 1
-        print(f"  {bits:>12}  {phase:>8.4f}  {str(frac):>7}  {r:>3}  {str(ok):>5}  {n}")
+        real = bits in support
+        print(f"  {bits:>12}  {phase:>8.4f}  {str(frac):>7}  {r:>3}  {str(ok):>6}  "
+              f"{str(real):>6}  {n}")
         if ok:
             candidates[r] = candidates.get(r, 0) + n
+            if real:
+                signal += n
     if not candidates:
         return None
+
     total = sum(counts.values())
-    good = sum(candidates.values())
-    print(f"\n  {good}/{total} shots ({100*good/total:.1f}%) gave a usable period.")
+    passed = sum(candidates.values())
+    print(f"\n  {passed}/{total} ({100*passed/total:.1f}%) pass the a^r = 1 check,")
+    print(f"  but only {signal}/{total} ({100*signal/total:.1f}%) of those are on the "
+          f"ideal support.")
+    if passed > signal * 1.3:
+        print("\n  Careful: a^r = 1 holds for any MULTIPLE of the true period, so pure\n"
+              "  noise passes it too. The on-support figure is the honest one; the\n"
+              "  first number flatters the run.")
     return min(candidates)
 
 
