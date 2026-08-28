@@ -140,27 +140,6 @@ uv run python 04_Algorithms/shors_15_ibm.py --submit   # queue a real job
 device's topology and gate set, reports what the job would cost, and submits
 nothing. Only `--submit` touches your quota.
 
-### Credentials
-
-Credentials live in **`.env`** at the vault root. It is gitignored, so it stays on
-this machine and is never pushed.
-
-```bash
-cp .env.example .env                      # then paste your token into .env
-uv run python _scripts/ibm_account.py     # verify it is read (token is masked)
-```
-
-`.env.example` is the committed template and must never hold a real token.
-
-The token is passed straight to `QiskitRuntimeService` rather than written to
-`~/.qiskit/`, so it exists in exactly one file that you control. `.gitignore`
-covers `.env`, `.env.*`, `*.token`, `*.key`, `credentials.json` and `.qiskit/`.
-
-> [!warning] If a token ever does reach a commit
-> Rotate it at [quantum.cloud.ibm.com](https://quantum.cloud.ibm.com/) immediately.
-> Deleting the file in a later commit does not help — it stays in the history, and
-> if the repo was ever pushed it must be treated as compromised.
-
 ### The counting register is the whole ballgame
 
 The textbook uses 8 counting qubits. Transpiled, that is what it costs:
