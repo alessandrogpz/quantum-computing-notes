@@ -646,9 +646,9 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "matplotlib", specifier = ">=3.9" },
+    { name = "matplotlib", specifier = ">=3.11.1" },
     { name = "pylatexenc", specifier = ">=2.10" },
-    { name = "qiskit", specifier = ">=1.2" },
+    { name = "qiskit", specifier = ">=2.5.2" },
 ]
 
 [[package]]
