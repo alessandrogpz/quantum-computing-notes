@@ -155,12 +155,17 @@ def shor(a: int, shots: int) -> None:
     print(f"\n{N} = {f1} x {f2}")
 
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
+    """Exposed so _scripts/check_docs.py can verify COMMANDS.md against it."""
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--a", type=int, default=2, choices=VALID_A,
                     help="the base whose period we find (default 2)")
     ap.add_argument("--shots", type=int, default=1024, help="measurement repetitions")
-    args = ap.parse_args()
+    return ap
+
+
+def main() -> None:
+    args = build_parser().parse_args()
     shor(args.a, args.shots)
 
 

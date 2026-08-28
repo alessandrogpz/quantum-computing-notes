@@ -233,7 +233,8 @@ def analyse(counts: dict[str, int], a: int, n_count: int) -> int | None:
     return min(candidates)
 
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
+    """Exposed so _scripts/check_docs.py can verify COMMANDS.md against it."""
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--a", type=int, default=2, choices=VALID_A, help="base (default 2)")
     ap.add_argument("--counting", type=int, default=3,
@@ -249,7 +250,11 @@ def main() -> None:
     ap.add_argument("--submit", action="store_true",
                     help="actually queue a job on real hardware; without it this is a dry run")
     ap.add_argument("--backend", default=None, help="backend name; default is least busy")
-    args = ap.parse_args()
+    return ap
+
+
+def main() -> None:
+    args = build_parser().parse_args()
 
     if args.job:
         from ibm_account import get_service

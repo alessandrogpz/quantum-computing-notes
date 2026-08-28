@@ -227,7 +227,8 @@ def render(entry, outdir: pathlib.Path, args) -> pathlib.Path:
     return path
 
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
+    """Exposed so _scripts/check_docs.py can verify COMMANDS.md against it."""
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--dpi", type=int, default=DPI, help=f"PNG resolution (default {DPI})")
     ap.add_argument("--scale", type=float, default=SCALE,
@@ -235,7 +236,11 @@ def main() -> None:
     ap.add_argument("--only", default=None, help="only build figures whose name contains this")
     ap.add_argument("--check", action="store_true",
                     help="compare against the committed figures instead of overwriting them")
-    args = ap.parse_args()
+    return ap
+
+
+def main() -> None:
+    args = build_parser().parse_args()
 
     selected = [f for f in FIGURES if not args.only or args.only in f[0]]
     if not selected:

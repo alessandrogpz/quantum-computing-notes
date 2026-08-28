@@ -25,10 +25,10 @@ script, not your shell. If `python` alone fails with `ModuleNotFoundError`, see
 
 Exact simulation on your laptop. No IBM account, no noise, always works.
 
-| Flag | Default | What it does |
-| :--- | :-- | :--- |
-| `--a {2,4,7,8,11,13}` | `2` | The base whose period is found. All six work; they differ in the period they produce (`4, 2, 4, 4, 2, 4`). Change it to see the algorithm is not special-cased to one number. |
-| `--shots N` | `1024` | How many times the circuit is run and measured. More shots = smoother distribution. On a noiseless simulator this only smooths sampling randomness; the answer is already correct. |
+| Flag                  | Default | What it does                                                                                                                                                                       |
+| :-------------------- | :------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--a {2,4,7,8,11,13}` | `2`     | The base whose period is found. All six work; they differ in the period they produce (`4, 2, 4, 4, 2, 4`). Change it to see the algorithm is not special-cased to one number.      |
+| `--shots N`           | `1024`  | How many times the circuit is run and measured. More shots = smoother distribution. On a noiseless simulator this only smooths sampling randomness; the answer is already correct. |
 
 ```bash
 uv run python 04_Algorithms/shors_15.py
@@ -124,6 +124,47 @@ brackets on GitHub. Exits non-zero if anything is broken.
 ```bash
 uv run python _scripts/check_links.py
 ```
+
+---
+
+## `_scripts/check_docs.py` — verify this file still matches the code
+
+No flags. Compares COMMANDS.md against the scripts' actual argparse definitions:
+
+1. Every flag documented here really exists.
+2. Every flag a script has is documented here.
+3. Every default stated here matches the parser's real default.
+
+It also checks that every `uv run python <path>` shown in any doc points at a file
+that exists. Exits non-zero on any mismatch.
+
+```bash
+uv run python _scripts/check_docs.py
+```
+
+The scripts expose `build_parser()` for this. If you add a flag and forget to
+document it, this fails.
+
+---
+
+## Keeping everything honest
+
+Three checks guard the things that rot silently. Run them together before
+committing:
+
+```bash
+uv run python _scripts/check_docs.py && \
+uv run python _scripts/check_links.py && \
+uv run python _scripts/build_figures.py --check
+```
+
+| Check | Catches |
+| :--- | :--- |
+| `check_docs.py` | A flag renamed, removed, added, or its default changed, without this file being updated |
+| `check_links.py` | A note renamed or moved, a dead heading anchor, a wikilink that would break on GitHub |
+| `build_figures.py --check` | A dependency upgrade silently changing every circuit image |
+
+All three exit non-zero on failure, so they work as a pre-commit hook or in CI.
 
 ---
 

@@ -17,6 +17,7 @@ quantum-comp-notes/
 ├── .env.example           template for IBM credentials (.env is gitignored)
 ├── _scripts/
 │   ├── build_figures.py   regenerates everything in _assets/
+│   ├── check_docs.py      verifies COMMANDS.md matches the code
 │   ├── check_links.py     verifies every link resolves
 │   └── ibm_account.py     loads IBM credentials from .env
 ├── 01_Foundations/
