@@ -51,6 +51,9 @@ B while you are working, if typing the prefix gets old. They are interchangeable
 
 ## Every command in this vault
 
+> Full flag-by-flag reference: **[COMMANDS.md](COMMANDS.md)**
+
+
 ```bash
 # Algorithms
 uv run python 04_Algorithms/shors_15.py               # factor 15, exact simulation

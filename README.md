@@ -13,6 +13,7 @@ Primary source: *Quantum Computing for Everyone* — Chris Bernhardt.
 quantum-comp-notes/
 ├── _assets/          generated circuit figures (do not edit by hand)
 ├── RUNNING.md             how to run the scripts
+├── COMMANDS.md            every command and flag
 ├── .env.example           template for IBM credentials (.env is gitignored)
 ├── _scripts/
 │   ├── build_figures.py   regenerates everything in _assets/
@@ -116,8 +117,10 @@ uv run python 04_Algorithms/shors_15.py
 ```
 
 Or activate once per terminal (`source .venv/bin/activate.fish`) and drop the
-prefix. Full command list, dependency management and troubleshooting:
-**[RUNNING.md](RUNNING.md)**.
+prefix.
+
+- **[COMMANDS.md](COMMANDS.md)** — every command and flag, and when to use it
+- **[RUNNING.md](RUNNING.md)** — setup, dependencies, troubleshooting
 
 ## IBM Quantum Credentials
 
