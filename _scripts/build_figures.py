@@ -21,7 +21,7 @@ There are three independent size knobs. Reach for them in this order:
    in, and file size. Regeneration required.
 
 Adding a figure: write a builder function, decorate it with @figure(...), re-run.
-Embed snippets for every figure are listed in _attachments/00_Figures.md.
+Embed snippets for every figure are listed in _assets/00_Figures.md.
 """
 
 import argparse
@@ -31,7 +31,7 @@ import matplotlib.pyplot as plt
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-OUT = ROOT / "_attachments"
+OUT = ROOT / "_assets"
 
 # --- defaults, overridable from the command line -----------------------------
 DPI = 200
