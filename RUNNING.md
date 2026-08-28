@@ -68,8 +68,15 @@ uv run python _scripts/ibm_account.py                 # verify .env is readable
 uv run python _scripts/build_figures.py               # rebuild circuit images
 uv run python _scripts/build_figures.py --check       # have any figures drifted?
 
-# Links
+# Links and docs
 uv run python _scripts/check_links.py                 # do all links still resolve?
+uv run python _scripts/check_docs.py                  # does COMMANDS.md match the code?
+```
+
+Before committing, run all three checks together:
+
+```bash
+uv run python _scripts/check_docs.py && uv run python _scripts/check_links.py && uv run python _scripts/build_figures.py --check
 ```
 
 Every script accepts `--help`.
