@@ -104,6 +104,50 @@ reproducible. If `.venv/` ever misbehaves, delete it; the next `uv run` rebuilds
 Obsidian settings in `.obsidian/` are committed too, except `workspace.json`
 (per-machine pane layout) and downloaded plugin bundles.
 
+## Running Things
+
+`python somefile.py` will **not** work — your system Python has no qiskit. The
+packages live in `.venv/` inside this folder, and something has to point at them.
+Two ways; pick one and stick to it.
+
+### A. Prefix with `uv run` (nothing to remember)
+
+```bash
+uv run python 04_Algorithms/shors_15.py
+```
+
+`uv run` means "run this with the project's Python". It also checks the
+environment matches `uv.lock` first and fixes it if not, so it always works, even
+on a fresh clone with no `.venv` at all.
+
+### B. Activate once per terminal, then plain `python`
+
+```bash
+source .venv/bin/activate.fish
+python 04_Algorithms/shors_15.py
+```
+
+After that `python` *means* the project's Python in that terminal, and the `uv run`
+prefix is unnecessary. It lasts until you close the terminal; `deactivate` ends it
+early. (In bash/zsh the file is `.venv/bin/activate` instead.)
+
+Use A in docs and scripts because it cannot be forgotten. Use B while working, if
+typing the prefix gets old.
+
+### The commands in this vault
+
+```bash
+uv run python 04_Algorithms/shors_15.py              # factor 15, simulated
+uv run python 04_Algorithms/shors_15_ibm.py          # what a hardware run would cost
+uv run python 04_Algorithms/shors_15_ibm.py --submit # really queue an IBM job
+uv run python _scripts/ibm_account.py                # check credentials are readable
+uv run python _scripts/build_figures.py              # rebuild circuit figures
+uv run python _scripts/build_figures.py --check      # have the figures drifted?
+```
+
+Every script takes `--help`. None of them care which directory you are in — paths
+are resolved relative to the file, not your shell.
+
 ## IBM Quantum Credentials
 
 Scripts that reach real hardware read their credentials from **`.env`** at the
