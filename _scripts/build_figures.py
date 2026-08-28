@@ -187,6 +187,34 @@ def _teleportation():
 
 
 # =============================================================================
+# 04_Algorithms -- Shor
+# =============================================================================
+
+@figure("circuit_shor_qpe", width=820, fold=-1)
+def _shor_qpe():
+    """The phase-estimation skeleton, with 3 counting qubits so it stays legible.
+
+    The runnable version in 04_Algorithms/shors_15.py uses 8.
+    """
+    import sys
+    sys.path.insert(0, str(ROOT / "04_Algorithms"))
+    from shors_15 import c_amod15, qft_dagger  # noqa: E402
+
+    n_count, n_work = 3, 4
+    qc = QuantumCircuit(n_count + n_work, n_count)
+    for q in range(n_count):
+        qc.h(q)
+    qc.x(n_count)
+    barrier(qc, "superpose")
+    for q in range(n_count):
+        qc.append(c_amod15(2, q), [q] + list(range(n_count, n_count + n_work)))
+    barrier(qc, "a^x mod 15")
+    qc.compose(qft_dagger(n_count), range(n_count), inplace=True)
+    qc.measure(range(n_count), range(n_count))
+    return qc
+
+
+# =============================================================================
 
 def render(entry, outdir: pathlib.Path, args) -> pathlib.Path:
     """Draw one registered figure into outdir and return the path written."""
