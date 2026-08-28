@@ -1,0 +1,181 @@
+"""Shor's algorithm for N = 15, targeted at real IBM Quantum hardware.
+
+    uv run python 04_Algorithms/shors_15_ibm.py                  # dry run, no job
+    uv run python 04_Algorithms/shors_15_ibm.py --counting 4     # shallower circuit
+    uv run python 04_Algorithms/shors_15_ibm.py --submit         # really queue a job
+
+The algorithm is identical to shors_15.py -- the circuit is imported from it, so
+the two cannot drift apart. What is added here is everything hardware needs:
+authentication, backend selection, transpilation to the backend's ISA, and error
+suppression.
+
+SAFETY: --dry-run is the default. It transpiles against a local fake backend with
+the same topology and gate set as a real device, reports the cost, and submits
+nothing. Only --submit queues a job against your account's quota.
+
+CREDENTIALS: never hardcode a token. Save it once, then this script picks it up:
+
+    QiskitRuntimeService.save_account(
+        token=os.getenv("QISKIT_API_KEY"),
+        instance=os.getenv("INSTANCE"),
+        channel="ibm_quantum_platform",
+    )
+"""
+
+import argparse
+import math
+import sys
+from fractions import Fraction
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from shors_15 import (  # noqa: E402
+    N, N_WORK, VALID_A, c_amod15, factors_from_period, qft_dagger,
+)
+
+from qiskit import QuantumCircuit  # noqa: E402
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager  # noqa: E402
+
+
+def period_circuit(a: int, n_count: int) -> QuantumCircuit:
+    """Same construction as shors_15.py, with the counting register size exposed.
+
+    On hardware the counting register is the main cost knob: each extra counting
+    qubit doubles the modular-exponentiation work and adds another controlled
+    permutation, so depth grows fast. Fewer counting qubits means a coarser phase
+    estimate, but a circuit that might actually survive the noise.
+    """
+    qc = QuantumCircuit(n_count + N_WORK, n_count)
+    for q in range(n_count):
+        qc.h(q)
+    qc.x(n_count)
+    for q in range(n_count):
+        qc.append(c_amod15(a, q), [q] + list(range(n_count, n_count + N_WORK)))
+    qc.compose(qft_dagger(n_count), range(n_count), inplace=True)
+    qc.measure(range(n_count), range(n_count))
+    return qc
+
+
+def median_2q_error(backend) -> float | None:
+    """Median two-qubit gate error from the backend's calibration data."""
+    errs = []
+    for name in ("cz", "ecr", "cx"):
+        if name in backend.target:
+            errs += [p.error for p in backend.target[name].values()
+                     if p is not None and p.error is not None]
+    if not errs:
+        return None
+    errs.sort()
+    return errs[len(errs) // 2]
+
+
+def report_cost(isa, backend, n_count: int) -> None:
+    ops = isa.count_ops()
+    two_q = sum(n for g, n in ops.items() if g in ("cz", "cx", "ecr", "cy"))
+    print(f"  backend          {backend.name} ({backend.num_qubits} qubits)")
+    print(f"  counting qubits  {n_count}  ->  {n_count + N_WORK} logical qubits")
+    print(f"  ISA depth        {isa.depth()}")
+    print(f"  two-qubit gates  {two_q}")
+    print(f"  total gates      {sum(ops.values())}")
+    print(f"  op breakdown     {dict(sorted(ops.items(), key=lambda kv: -kv[1]))}")
+
+    err = median_2q_error(backend)
+    if err:
+        survival = (1 - err) ** two_q
+        print(f"\n  median 2q error  {err:.2e}")
+        print(f"  rough fidelity   (1 - {err:.1e})^{two_q} = {survival:.2%}")
+        if survival < 0.01:
+            print("  -> essentially pure noise. Reduce --counting.")
+        elif survival < 0.25:
+            print("  -> marginal. Expect a weak signal above a noisy floor.")
+        else:
+            print("  -> plausible. The period may well be recoverable.")
+
+
+def analyse(counts: dict[str, int], a: int, n_count: int) -> int | None:
+    """Identical post-processing to the simulator version."""
+    print(f"\n  {'measured':>12}  {'phase':>8}  {'~ s/r':>7}  {'r':>3}  {'valid':>5}  shots")
+    candidates: dict[int, int] = {}
+    for bits, n in sorted(counts.items(), key=lambda kv: -kv[1])[:12]:
+        phase = int(bits, 2) / 2**n_count
+        frac = Fraction(phase).limit_denominator(N)
+        r = frac.denominator
+        ok = r > 1 and pow(a, r, N) == 1
+        print(f"  {bits:>12}  {phase:>8.4f}  {str(frac):>7}  {r:>3}  {str(ok):>5}  {n}")
+        if ok:
+            candidates[r] = candidates.get(r, 0) + n
+    if not candidates:
+        return None
+    total = sum(counts.values())
+    good = sum(candidates.values())
+    print(f"\n  {good}/{total} shots ({100*good/total:.1f}%) gave a usable period.")
+    return min(candidates)
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--a", type=int, default=2, choices=VALID_A, help="base (default 2)")
+    ap.add_argument("--counting", type=int, default=2,
+                    help="counting qubits. 8 is textbook, but for N=15 the phases are "
+                         "exact multiples of 1/4, so 2 bits resolve them with no loss "
+                         "and ~90x fewer gates (default 2)")
+    ap.add_argument("--shots", type=int, default=4096)
+    ap.add_argument("--opt-level", type=int, default=3, choices=range(4),
+                    help="transpiler optimization level (default 3)")
+    ap.add_argument("--submit", action="store_true",
+                    help="actually queue a job on real hardware; without it this is a dry run")
+    ap.add_argument("--backend", default=None, help="backend name; default is least busy")
+    args = ap.parse_args()
+
+    qc = period_circuit(args.a, args.counting)
+    print(f"Shor for N = {N}, a = {args.a}, {args.counting} counting qubits")
+    print(f"Logical circuit depth {qc.depth()}\n")
+
+    if not args.submit:
+        from qiskit_ibm_runtime.fake_provider import FakeTorino
+        backend = FakeTorino()
+        print("DRY RUN -- transpiling against a local fake backend, submitting nothing.\n")
+        pm = generate_preset_pass_manager(backend=backend, optimization_level=args.opt_level)
+        report_cost(pm.run(qc), backend, args.counting)
+        print("\nRe-run with --submit to queue this on real hardware.")
+        return
+
+    from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
+
+    service = QiskitRuntimeService()
+    backend = (service.backend(args.backend) if args.backend
+               else service.least_busy(simulator=False, operational=True))
+    print(f"Authenticated. Connected to: {backend.name}\n")
+
+    pm = generate_preset_pass_manager(backend=backend, optimization_level=args.opt_level)
+    isa = pm.run(qc)
+    report_cost(isa, backend, args.counting)
+
+    sampler = Sampler(mode=backend)
+    # Error suppression. Dynamical decoupling idles qubits with pulse sequences that
+    # cancel low-frequency noise; twirling randomises coherent gate errors into
+    # incoherent ones, which average out over shots.
+    sampler.options.dynamical_decoupling.enable = True
+    sampler.options.dynamical_decoupling.sequence_type = "XY4"
+    sampler.options.twirling.enable_gates = True
+    sampler.options.twirling.enable_measure = True
+
+    print(f"\nSubmitting {args.shots} shots...")
+    job = sampler.run([(isa, None, args.shots)])
+    print(f"  job id: {job.job_id()}")
+    counts = job.result()[0].data.c.get_counts()
+
+    r = analyse(counts, args.a, args.counting)
+    if r is None:
+        print("\nNo usable period survived the noise. Try --counting 3, or more shots.")
+        return
+    print(f"\nPeriod r = {r}")
+    result = factors_from_period(args.a, r)
+    if result is None:
+        print(f"r = {r} is unusable for a = {args.a}; pick another base.")
+        return
+    print(f"\n{N} = {result[0]} x {result[1]}")
+
+
+if __name__ == "__main__":
+    main()

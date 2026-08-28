@@ -2,12 +2,6 @@
 
 Factoring $N = 15$ into $3 \times 5$. Runnable version: [`shors_15.py`](shors_15.py).
 
-> [!warning] This one needs complex amplitudes
-> You asked whether this could stay real. It cannot — and Shor's is precisely
-> where the real-amplitude picture runs out. See [[#Why the imaginary numbers are
-> unavoidable here]] below. This is the trigger described in
-> [[Real_vs_Complex_Amplitudes]].
-
 ## What the algorithm actually is
 
 Shor's is **mostly classical number theory with one quantum subroutine**. That
@@ -128,6 +122,74 @@ uv run python 04_Algorithms/shors_15.py --a 7 --shots 2048
 Simulated exactly with Qiskit's built-in `StatevectorSampler` — no Aer, no IBM
 account, no hardware. Twelve qubits is a 4096-amplitude statevector, which is
 nothing for a laptop.
+
+## Running it on real IBM hardware
+
+[`shors_15_ibm.py`](shors_15_ibm.py) imports the circuit from `shors_15.py`, so the
+algorithm cannot drift between the two. What it adds is what hardware needs:
+authentication, backend selection, transpilation to the device's ISA, and error
+suppression. The setup follows the pattern from
+[`../../qiskit-fundamentals/week_5/3-transpilation.ipynb`](../../qiskit-fundamentals/week_5/3-transpilation.ipynb).
+
+```bash
+uv run python 04_Algorithms/shors_15_ibm.py            # dry run, submits nothing
+uv run python 04_Algorithms/shors_15_ibm.py --submit   # queue a real job
+```
+
+**A dry run is the default.** It transpiles against a local fake backend with a real
+device's topology and gate set, reports what the job would cost, and submits
+nothing. Only `--submit` touches your quota.
+
+### Credentials
+
+Never put a token in a file. Save it once, and the script picks it up:
+
+```python
+QiskitRuntimeService.save_account(
+    token=os.getenv("QISKIT_API_KEY"),
+    instance=os.getenv("INSTANCE"),
+    channel="ibm_quantum_platform",
+)
+```
+
+### The counting register is the whole ballgame
+
+The textbook uses 8 counting qubits. Transpiled, that is what it costs:
+
+| Counting qubits | Logical qubits | ISA depth | 2-qubit gates | Est. fidelity |
+| :-: | :-: | --: | --: | --: |
+| 2 | 6 | 778 | 238 | ~37% |
+| 3 | 7 | 1875 | 579 | ~9% |
+| 4 | 8 | 4232 | 1235 | ~0.6% |
+| **8** | **12** | **74291** | **21595** | **~0%** |
+
+*(transpiled at optimization level 3 for a 133-qubit device, median two-qubit error
+$4.2 \times 10^{-3}$; fidelity is the crude $(1-\varepsilon)^{n}$ estimate the script
+prints)*
+
+The textbook circuit is **pure noise** on today's hardware — 21,595 two-qubit gates
+at a 0.4% error rate each leaves nothing. This is not a flaw in the script; it is
+the actual state of the field.
+
+But for $N = 15$ the measured phases are exactly $0, \tfrac14, \tfrac12, \tfrac34$ —
+so **2 counting qubits resolve them with no loss at all**. Verified on the
+simulator: 2, 3, 4 and 8 counting qubits all recover $r = 4$ at the same ~48.6%
+success rate. Two bits is 90x cheaper and lands in plausible territory, which is
+why it is the default here.
+
+That trade — spend the minimum precision the problem actually needs — is the
+central move in getting anything to run on current devices.
+
+### Error suppression
+
+The script enables two things through `SamplerV2`:
+
+- **Dynamical decoupling** (`XY4`) — pulse sequences on idling qubits that cancel
+  low-frequency noise while they wait.
+- **Twirling** of gates and measurements — randomises *coherent* errors into
+  incoherent ones, which then average out over shots instead of compounding.
+
+Neither fixes a circuit that is too deep; they buy margin on one that is close.
 
 ## Honest caveat
 
