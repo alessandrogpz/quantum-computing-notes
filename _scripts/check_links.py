@@ -35,10 +35,17 @@ def strip_code(text: str) -> str:
 
 
 def anchors(path: pathlib.Path) -> set[str]:
+    """GitHub-style slugs for every heading in a file.
+
+    Only fenced blocks are removed here, not inline code: a heading like
+    ``## The `.env` file`` still anchors as `the-env-file`, so stripping code
+    spans first would invent a slug GitHub never generates.
+    """
     found = set()
-    for line in strip_code(path.read_text()).splitlines():
+    body = FENCE.sub("", path.read_text())
+    for line in body.splitlines():
         if line.startswith("#"):
-            h = line.lstrip("#").strip().lower()
+            h = line.lstrip("#").strip().lower().replace("`", "")
             h = re.sub(r"[^\w\s-]", "", h)
             found.add(re.sub(r"\s+", "-", h))
     return found

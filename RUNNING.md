@@ -103,6 +103,34 @@ change every image in the vault:
 uv run python _scripts/build_figures.py --check
 ```
 
+## Setting up on a new machine
+
+Everything except your credentials is in the repo. Four steps:
+
+```bash
+# 1. Clone
+git clone git@github.com:alessandrogpz/quantum-computing-notes.git
+cd quantum-computing-notes
+
+# 2. Nothing to install -- uv builds the environment on first use.
+#    It downloads the pinned Python too if this machine lacks it.
+uv run python 04_Algorithms/shors_15.py
+
+# 3. Credentials: .env is gitignored, so it did NOT come with the clone.
+cp .env.example .env
+#    Open .env and set QISKIT_API_KEY. INSTANCE and CHANNEL are optional.
+
+# 4. Verify
+uv run python _scripts/ibm_account.py
+```
+
+Open the folder as an Obsidian vault and the notes and figures are already there —
+step 2 onwards is only needed to *run* things.
+
+The variables `.env` expects are documented in
+[COMMANDS.md](COMMANDS.md#the-env-file), and `.env.example` in this repo is the
+template with the same list.
+
 ## Checking IBM credentials
 
 ```bash

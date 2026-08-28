@@ -13,6 +13,11 @@ Three checks:
   2. Every flag a script has is documented.
   3. Every default stated in the docs matches the parser's real default.
 
+Then, for credentials: the .env variable names in ibm_account.py, .env.example and
+the COMMANDS.md table must all agree, and anything the code requires must be
+documented as required. Someone setting up a new machine has only the docs to go
+on, so a variable named inconsistently there is a setup that silently fails.
+
 Plus: every `uv run python <path>` command anywhere in the docs points at a file
 that exists.
 
@@ -36,7 +41,7 @@ DOCUMENTED = (
 )
 
 
-def load_parser(rel: str) -> argparse.ArgumentParser:
+def load_module(rel: str) -> types.ModuleType:
     """Compile the script from source, never from __pycache__.
 
     importlib will happily reuse a stale .pyc when a file is rewritten inside the
@@ -49,7 +54,11 @@ def load_parser(rel: str) -> argparse.ArgumentParser:
     module = types.ModuleType(path.stem)
     module.__file__ = str(path)
     exec(compile(path.read_text(), str(path), "exec"), module.__dict__)
-    return module.build_parser()
+    return module
+
+
+def load_parser(rel: str) -> argparse.ArgumentParser:
+    return load_module(rel).build_parser()
 
 
 def real_flags(parser: argparse.ArgumentParser) -> dict[str, object]:
@@ -119,6 +128,26 @@ def main() -> int:
                 problems.append(
                     f"{rel}: {flag} documented default {stated!r}, actually {actual!r}"
                 )
+
+    # The .env variable names live in three places: the loader's REQUIRED and
+    # OPTIONAL tuples, the .env.example template, and the COMMANDS.md table.
+    # All three must agree, or someone setting up a new machine is misled.
+    loader = load_module("_scripts/ibm_account.py")
+    code_vars = set(loader.REQUIRED) | set(loader.OPTIONAL)
+    example_vars = set(re.findall(r"^([A-Z][A-Z_]*)=", (ROOT / ".env.example").read_text(), re.M))
+    doc_vars = set(re.findall(r"^\|\s*`([A-Z][A-Z_]*)`\s*\|", text, re.M))
+    checked += len(code_vars)
+
+    for name, found in ((".env.example", example_vars), ("COMMANDS.md", doc_vars)):
+        for var in code_vars - found:
+            problems.append(f"{name}: missing env var {var}, which ibm_account.py expects")
+        for var in found - code_vars:
+            problems.append(f"{name}: documents env var {var}, which ibm_account.py ignores")
+
+    for var in loader.REQUIRED:
+        row = re.search(rf"^\|\s*`{var}`\s*\|([^|]*)\|", text, re.M)
+        if row and "yes" not in row.group(1).lower():
+            problems.append(f"COMMANDS.md: {var} is required by the code but not marked required")
 
     # Any command shown in any doc must point at a file that exists.
     for md in ROOT.glob("*.md"):

@@ -81,6 +81,49 @@ uv run python 04_Algorithms/shors_15_ibm.py --job da8mnr4e74ec73airbdg
 
 ---
 
+## The `.env` file
+
+Credentials live in a file called **`.env`**, in the **root of this repo** (beside
+`README.md`). It is gitignored, so it never leaves the machine it is on — which
+means **every machine you clone to needs its own**.
+
+Create it from the committed template:
+
+```bash
+cp .env.example .env
+```
+
+Then fill in these variables:
+
+| Variable | Required | Value | Where to get it |
+| :--- | :-: | :--- | :--- |
+| `QISKIT_API_KEY` | **yes** | IBM Cloud API key, ~44 mixed-case characters | [cloud.ibm.com/iam/apikeys](https://cloud.ibm.com/iam/apikeys) → Create → copy immediately, it is shown once |
+| `INSTANCE` | no | Instance CRN, `crn:v1:bluemix:public:quantum-computing:...` | [quantum.cloud.ibm.com/instances](https://quantum.cloud.ibm.com/instances). Leave blank to use your account default |
+| `CHANNEL` | no | Defaults to `ibm_quantum_platform` | Only set this if IBM tells you to |
+
+Format is plain `KEY=value`, one per line. Blank lines and `#` comments are
+ignored, and surrounding quotes are stripped:
+
+```
+QISKIT_API_KEY=your-key-here
+INSTANCE=
+CHANNEL=
+```
+
+> [!warning] Never put a real token in `.env.example`
+> That file **is** committed. `.env` is the one that is ignored. If a token ever
+> reaches a commit, rotate it at
+> [cloud.ibm.com/iam/apikeys](https://cloud.ibm.com/iam/apikeys) — deleting it in a
+> later commit does not remove it from history.
+
+Verify it worked:
+
+```bash
+uv run python _scripts/ibm_account.py
+```
+
+---
+
 ## `_scripts/ibm_account.py` — check credentials
 
 No flags. Prints a **masked** token, channel and instance, so it is safe to run in
@@ -134,6 +177,11 @@ No flags. Compares COMMANDS.md against the scripts' actual argparse definitions:
 1. Every flag documented here really exists.
 2. Every flag a script has is documented here.
 3. Every default stated here matches the parser's real default.
+
+For credentials it also checks that the `.env` variable names agree across
+`ibm_account.py`, `.env.example` and the table above, and that anything the code
+requires is marked required. Someone setting up a new machine has only the docs to
+go on, so an inconsistent name there is a setup that silently fails.
 
 It also checks that every `uv run python <path>` shown in any doc points at a file
 that exists. Exits non-zero on any mismatch.
