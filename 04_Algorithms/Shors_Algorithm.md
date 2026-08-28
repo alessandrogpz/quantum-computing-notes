@@ -189,6 +189,59 @@ why it is the default here.
 That trade — spend the minimum precision the problem actually needs — is the
 central move in getting anything to run on current devices.
 
+### How do you know it really ran on IBM, and that it worked?
+
+Three independent questions, and the script answers each separately.
+
+**1. Did it run on real hardware?** The script prints provenance that comes from
+IBM, not from itself: job id, backend name, `simulator` flag, qubit count, status,
+timestamps and quota usage. It flags loudly if `simulator` is true. The
+independent check is the job id — look it up at
+[quantum.cloud.ibm.com/workloads](https://quantum.cloud.ibm.com/workloads). If it
+is not listed there, it did not run on IBM hardware.
+
+```bash
+uv run python 04_Algorithms/shors_15_ibm.py --job <job-id>    # re-read a past job
+```
+
+**2. Did the device actually compute anything?** A noiseless run only ever produces
+bitstrings in the *ideal support*; uniform noise spreads over all $2^n$. So the
+fraction of shots landing on the support, against what uniform noise would give,
+measures whether anything quantum happened. The script reports it in sigma.
+
+> [!warning] With 2 counting qubits this test is vacuous
+> For $n = 2$ the ideal support is *all four* bitstrings, so **random noise scores
+> 100%**. A run at `--counting 2` cannot distinguish a quantum computer from a coin
+> flip, no matter how clean the output looks. It is cheap, and it proves nothing.
+
+| Counting qubits | Ideal support | Uniform noise scores | Est. fidelity | Verdict |
+| :-: | :-: | :-: | :-: | :--- |
+| 2 | 4 of 4 | 100% | ~37% | unfalsifiable |
+| **3** | **4 of 8** | **50%** | **~9%** | **~6σ — the sweet spot** |
+| 4 | 4 of 16 | 25% | ~0.6% | signal too weak to detect |
+| 8 | 4 of 256 | 1.6% | ~0% | pure noise |
+
+Three counting qubits is the default because it is the only setting where the
+result is both *achievable* and *falsifiable*. Validated by injecting uniform noise
+into simulated results at the predicted fidelity: 9% fidelity gives $6.2\sigma$,
+pure noise gives $-1.2\sigma$ and is correctly rejected.
+
+**3. Is the answer right?** This is the easy one, and the reason none of the above
+is load-bearing. Shor's output is **classically verifiable**:
+
+```
+[ok] 2^4 mod 15 == 1
+[ok] 3 x 5 == 15
+[ok] both factors non-trivial
+[ok] 3 divides 15
+```
+
+Multiplying $3 \times 5$ is free. **You never have to trust the quantum computer** —
+if the factors multiply back to $N$, they are correct, whatever produced them. That
+asymmetry, hard to find and trivial to check, is exactly why factoring is the
+canonical quantum application, and it is also why a noisy device is still useful:
+you run it, check classically, and retry on failure.
+
 ### Error suppression
 
 The script enables two things through `SamplerV2`:

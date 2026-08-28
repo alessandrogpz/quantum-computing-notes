@@ -94,6 +94,92 @@ def report_cost(isa, backend, n_count: int) -> None:
             print("  -> plausible. The period may well be recoverable.")
 
 
+def ideal_support(a: int, n_count: int) -> set[str]:
+    """Bitstrings a noiseless run can produce, from exact simulation."""
+    from qiskit.primitives import StatevectorSampler
+    qc = period_circuit(a, n_count)
+    counts = StatevectorSampler().run([qc], shots=8192).result()[0].data.c.get_counts()
+    return {k for k, v in counts.items() if v > 8192 * 0.01}
+
+
+def provenance(job, backend) -> None:
+    """Everything that proves where this ran. None of it comes from us."""
+    cfg = getattr(backend, "configuration", lambda: None)()
+    is_sim = getattr(cfg, "simulator", None)
+    print("\nProvenance -- reported by IBM, not by this script:")
+    print(f"  job id      {job.job_id()}")
+    print(f"  backend     {backend.name}")
+    print(f"  simulator   {is_sim if is_sim is not None else 'unknown'}"
+          f"{'   <-- NOT real hardware!' if is_sim else ''}")
+    print(f"  qubits      {backend.num_qubits}")
+    print(f"  status      {job.status()}")
+    for label, value in (("created", getattr(job, "creation_date", None)),
+                         ("instance", getattr(job, "instance", None)),
+                         ("primitive", getattr(job, "primitive_id", None))):
+        if value:
+            print(f"  {label:<11} {value}")
+    try:
+        usage = job.usage()
+        print(f"  usage       {usage}")
+    except Exception:
+        pass
+    print(f"\n  Cross-check independently at https://quantum.cloud.ibm.com/workloads")
+    print(f"  by searching for job {job.job_id()}. If it is not listed there,")
+    print(f"  it did not run on IBM hardware.")
+
+
+def verify_quantum(counts: dict[str, int], a: int, n_count: int) -> None:
+    """Did the device do something a coin flip could not?
+
+    A noiseless run only ever produces bitstrings in the 'ideal support'. Uniform
+    noise spreads over all 2^n. So the fraction of shots landing on the support,
+    compared against what uniform noise would give, measures whether anything
+    quantum actually happened.
+    """
+    support = ideal_support(a, n_count)
+    total = sum(counts.values())
+    on = sum(v for k, v in counts.items() if k in support)
+    frac = on / total
+    baseline = len(support) / 2**n_count
+
+    print("\nDid the hardware actually compute anything?")
+    print(f"  ideal outcomes    {sorted(support)}")
+    print(f"  on-support shots  {on}/{total} = {frac:.1%}")
+    print(f"  uniform noise     would give {baseline:.1%}")
+
+    if baseline >= 0.999:
+        print("\n  INCONCLUSIVE. With this few counting qubits every bitstring is a")
+        print("  valid outcome, so random noise scores 100% too. This run cannot")
+        print("  distinguish a quantum computer from a coin flip. Use --counting 3")
+        print("  or more if you want the result to be evidence of anything.")
+        return
+
+    sigma = (baseline * (1 - baseline) / total) ** 0.5
+    z = (frac - baseline) / sigma if sigma else 0.0
+    print(f"  excess            {frac - baseline:+.1%}  ({z:.1f} sigma)")
+    if z > 5:
+        print("\n  Decisive: far more concentrated than noise could explain.")
+    elif z > 3:
+        print("\n  Significant: the device is doing real work, though noisily.")
+    else:
+        print("\n  Not distinguishable from noise. The circuit is too deep for this")
+        print("  device; try fewer counting qubits or more shots.")
+
+
+def verify_answer(a: int, r: int, f1: int, f2: int) -> bool:
+    """Check the answer classically. This is why you never have to trust the QPU."""
+    print("\nVerifying the answer classically -- no trust in the QPU required:")
+    checks = [
+        (f"{a}^{r} mod {N} == 1", pow(a, r, N) == 1),
+        (f"{f1} x {f2} == {N}", f1 * f2 == N),
+        ("both factors non-trivial", 1 not in (f1, f2) and N not in (f1, f2)),
+        (f"{f1} divides {N}", N % f1 == 0),
+    ]
+    for label, ok in checks:
+        print(f"  [{'ok' if ok else 'FAIL'}] {label}")
+    return all(ok for _, ok in checks)
+
+
 def analyse(counts: dict[str, int], a: int, n_count: int) -> int | None:
     """Identical post-processing to the simulator version."""
     print(f"\n  {'measured':>12}  {'phase':>8}  {'~ s/r':>7}  {'r':>3}  {'valid':>5}  shots")
@@ -117,10 +203,13 @@ def analyse(counts: dict[str, int], a: int, n_count: int) -> int | None:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--a", type=int, default=2, choices=VALID_A, help="base (default 2)")
-    ap.add_argument("--counting", type=int, default=2,
-                    help="counting qubits. 8 is textbook, but for N=15 the phases are "
-                         "exact multiples of 1/4, so 2 bits resolve them with no loss "
-                         "and ~90x fewer gates (default 2)")
+    ap.add_argument("--counting", type=int, default=3,
+                    help="counting qubits. 8 is textbook but pure noise on hardware; "
+                         "2 is cheapest but unverifiable (noise scores 100%%); 3 is the "
+                         "sweet spot, cheap enough to run and still falsifiable "
+                         "(default 3)")
+    ap.add_argument("--job", default=None,
+                    help="fetch a previously submitted job by id instead of running one")
     ap.add_argument("--shots", type=int, default=4096)
     ap.add_argument("--opt-level", type=int, default=3, choices=range(4),
                     help="transpiler optimization level (default 3)")
@@ -128,6 +217,21 @@ def main() -> None:
                     help="actually queue a job on real hardware; without it this is a dry run")
     ap.add_argument("--backend", default=None, help="backend name; default is least busy")
     args = ap.parse_args()
+
+    if args.job:
+        from ibm_account import get_service
+        service = get_service()
+        job = service.job(args.job)
+        print(f"Retrieved job {args.job}: status {job.status()}")
+        if not job.done():
+            print("Not finished yet. Run again when it is.")
+            return
+        provenance(job, job.backend())
+        counts = job.result()[0].data.c.get_counts()
+        n_count = len(next(iter(counts)))
+        verify_quantum(counts, args.a, n_count)
+        finish(counts, args.a, n_count)
+        return
 
     qc = period_circuit(args.a, args.counting)
     print(f"Shor for N = {N}, a = {args.a}, {args.counting} counting qubits")
@@ -168,19 +272,29 @@ def main() -> None:
 
     print(f"\nSubmitting {args.shots} shots...")
     job = sampler.run([(isa, None, args.shots)])
-    print(f"  job id: {job.job_id()}")
+    print(f"  job id: {job.job_id()}   (re-read later with --job {job.job_id()})")
     counts = job.result()[0].data.c.get_counts()
 
-    r = analyse(counts, args.a, args.counting)
+    provenance(job, backend)
+    verify_quantum(counts, args.a, args.counting)
+    finish(counts, args.a, args.counting)
+
+
+def finish(counts: dict[str, int], a: int, n_count: int) -> None:
+    r = analyse(counts, a, n_count)
     if r is None:
-        print("\nNo usable period survived the noise. Try --counting 3, or more shots.")
+        print("\nNo usable period survived the noise. Try fewer counting qubits.")
         return
     print(f"\nPeriod r = {r}")
-    result = factors_from_period(args.a, r)
+    result = factors_from_period(a, r)
     if result is None:
-        print(f"r = {r} is unusable for a = {args.a}; pick another base.")
+        print(f"r = {r} is unusable for a = {a}; pick another base.")
         return
-    print(f"\n{N} = {result[0]} x {result[1]}")
+    f1, f2 = result
+    if verify_answer(a, r, f1, f2):
+        print(f"\n{N} = {f1} x {f2}   -- verified")
+    else:
+        print(f"\nGot {f1} x {f2}, but it does not check out. Treat as noise.")
 
 
 if __name__ == "__main__":
