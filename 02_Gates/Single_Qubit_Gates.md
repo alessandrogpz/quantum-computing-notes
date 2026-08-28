@@ -48,8 +48,8 @@ $$H|0\rangle = \tfrac{1}{\sqrt2}\big(|0\rangle + |1\rangle\big), \qquad H|1\rang
 Gates acting on one qubit are drawn as a square with the appropriate letter in the
 centre:
 
-![[gate_single_qubit_boxes.png|340]]
+<img src="../_assets/gate_single_qubit_boxes.png" width="340" alt="gate single qubit boxes">
 
 ---
 
-Related: [[Involutions]], [[From_Classical_To_Quantum]]
+Related: [Involutions](Involutions.md), [From_Classical_To_Quantum](From_Classical_To_Quantum.md)

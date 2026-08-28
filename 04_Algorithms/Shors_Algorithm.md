@@ -53,7 +53,7 @@ small enough to write out by hand and read.
 
 Quantum phase estimation applied to the operator "multiply by $a$ mod 15":
 
-![[circuit_shor_qpe.png|820]]
+<img src="../_assets/circuit_shor_qpe.png" width="820" alt="circuit shor qpe">
 
 *(drawn with 3 counting qubits so it stays legible; the runnable script uses 8)*
 
@@ -77,14 +77,14 @@ $$e^{-i\pi/2} = -i, \qquad e^{-i\pi/4} = \tfrac{1}{\sqrt2} - \tfrac{i}{\sqrt2}$$
 
 Checked numerically: the $16 \times 16$ QFT matrix has entries with imaginary parts
 up to $0.25$ in magnitude. There is no real-amplitude version. In
-[[Single_Qubit_Gates]] the "relative phase" was a sign, $\pm 1$ — the only two
+[Single_Qubit_Gates](../02_Gates/Single_Qubit_Gates.md) the "relative phase" was a sign, $\pm 1$ — the only two
 phases reachable with real numbers. Shor's needs the phase to take a *continuum* of
 values, because the period is read off from **how far around the circle** the phase
 has gone. A sign can only ever encode "half a turn"; you cannot encode $s/r$ for
 arbitrary $r$ in it.
 
 This is the concrete answer to the question parked in
-[[Real_vs_Complex_Amplitudes]]: real amplitudes carry you through entanglement,
+[Real_vs_Complex_Amplitudes](../99_TODO/Real_vs_Complex_Amplitudes.md): real amplitudes carry you through entanglement,
 teleportation, superdense coding and Grover. They stop at the QFT.
 
 ## Reading the output
@@ -215,7 +215,7 @@ qubit counts explode from 12 to thousands.
 
 ---
 
-Related: [[Real_vs_Complex_Amplitudes]], [[Single_Qubit_Gates]], [[From_Classical_To_Quantum]]
+Related: [Real_vs_Complex_Amplitudes](../99_TODO/Real_vs_Complex_Amplitudes.md), [Single_Qubit_Gates](../02_Gates/Single_Qubit_Gates.md), [From_Classical_To_Quantum](../02_Gates/From_Classical_To_Quantum.md)
 
 Reference: [IBM Quantum — Shor's algorithm tutorial](https://quantum.cloud.ibm.com/docs/en/tutorials/shors-algorithm),
 which factors 15 with the same structure (8 counting + 4 target qubits, SWAP-based

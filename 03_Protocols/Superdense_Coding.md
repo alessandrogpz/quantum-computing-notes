@@ -27,11 +27,11 @@ $$\tfrac{1}{\sqrt2}|00\rangle + \tfrac{1}{\sqrt2}|11\rangle$$
 
 ## Example — Alice wants to send 00
 
-![[circuit_superdense_00.png|560]]
+<img src="../_assets/circuit_superdense_00.png" width="560" alt="circuit superdense 00">
 
 - **Bell prep** (first $H$ + CNOT) changes the basis and makes the target depend on the control.
 - **Alice encodes** by acting on her wire only.
-- The last CNOT + $H$ is Bob reverting the Bell circuit — the involution from [[Involutions]] — which decodes.
+- The last CNOT + $H$ is Bob reverting the Bell circuit — the involution from [Involutions](../02_Gates/Involutions.md) — which decodes.
 
 $$|00\rangle \xrightarrow{\;H\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\big) \xrightarrow{\;\text{CNOT}\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |11\rangle\big) \xrightarrow{\;I\;} \text{same}$$
 
@@ -41,7 +41,7 @@ $$\xrightarrow{\;\text{CNOT}\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\bi
 
 ## Example — Alice wants to send 01
 
-![[circuit_superdense_01.png|560]]
+<img src="../_assets/circuit_superdense_01.png" width="560" alt="circuit superdense 01">
 
 $$|00\rangle \xrightarrow{\;H\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\big) \xrightarrow{\;\text{CNOT}\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |11\rangle\big) \xrightarrow{\;X\;} \tfrac{1}{\sqrt2}\big(|10\rangle + |01\rangle\big)$$
 
@@ -79,4 +79,4 @@ for b in ("00", "01", "10", "11"):
 
 ---
 
-The inverse protocol: [[Quantum_Teleportation]].
+The inverse protocol: [Quantum_Teleportation](Quantum_Teleportation.md).

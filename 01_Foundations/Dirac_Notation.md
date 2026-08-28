@@ -36,4 +36,4 @@ and a qubit has the form $a_0|0\rangle + a_1|1\rangle$ with $a_0^2 + a_1^2 = 1$.
 
 ---
 
-Next: [[Tensor_Products]] — combining two qubits into one state.
+Next: [Tensor_Products](Tensor_Products.md) — combining two qubits into one state.

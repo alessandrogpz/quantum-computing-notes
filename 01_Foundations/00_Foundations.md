@@ -5,22 +5,22 @@ what a measurement does.
 
 | Note | Contents |
 | :--- | :--- |
-| [[Dirac_Notation]] | Kets and bras, probability amplitudes, the standard basis |
-| [[Tensor_Products]] | Combining two qubits, the $r,s,t,u$ amplitudes, normalization |
-| [[Entanglement_Criterion]] | The $ru$ vs $st$ test, worked separable example |
-| [[Measurement_and_Perspective]] | Grouping by Alice or by Bob, conditional collapse |
+| [Dirac_Notation](Dirac_Notation.md) | Kets and bras, probability amplitudes, the standard basis |
+| [Tensor_Products](Tensor_Products.md) | Combining two qubits, the $r,s,t,u$ amplitudes, normalization |
+| [Entanglement_Criterion](Entanglement_Criterion.md) | The $ru$ vs $st$ test, worked separable example |
+| [Measurement_and_Perspective](Measurement_and_Perspective.md) | Grouping by Alice or by Bob, conditional collapse |
 
 ## Reading order
 
-1. [[Dirac_Notation]] — the notation everything else is written in.
-2. [[Tensor_Products]] — how two one-qubit states become one two-qubit state.
-3. [[Entanglement_Criterion]] — when that process cannot be run backwards.
-4. [[Measurement_and_Perspective]] — what entanglement means operationally.
+1. [Dirac_Notation](Dirac_Notation.md) — the notation everything else is written in.
+2. [Tensor_Products](Tensor_Products.md) — how two one-qubit states become one two-qubit state.
+3. [Entanglement_Criterion](Entanglement_Criterion.md) — when that process cannot be run backwards.
+4. [Measurement_and_Perspective](Measurement_and_Perspective.md) — what entanglement means operationally.
 
 > [!note] These notes use **real** probability amplitudes
 > That is a deliberate simplification, not a gap — real-amplitude quantum computing
 > is computationally universal. What it costs, and when to drop it, is parked in
-> [[Real_vs_Complex_Amplitudes]] under [[00_TODO|99_TODO]].
+> [Real_vs_Complex_Amplitudes](../99_TODO/Real_vs_Complex_Amplitudes.md) under [99_TODO](../99_TODO/00_TODO.md).
 
 ## Key results
 

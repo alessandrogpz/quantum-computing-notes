@@ -7,8 +7,8 @@ run forwards to prepare it or backwards to read it out.
 
 | Note | Sends | By transferring |
 | :--- | :--- | :--- |
-| [[Superdense_Coding]] | 2 classical bits | 1 qubit |
-| [[Quantum_Teleportation]] | 1 qubit | 2 classical bits |
+| [Superdense_Coding](Superdense_Coding.md) | 2 classical bits | 1 qubit |
+| [Quantum_Teleportation](Quantum_Teleportation.md) | 1 qubit | 2 classical bits |
 
 They are duals of each other:
 
@@ -28,4 +28,4 @@ Both protocols use the same 4-way mapping between two classical bits and a gate:
 | 10 | $Z$ |
 | 11 | $Y$ (or $ZX$) |
 
-Prerequisites: [[Entanglement_Criterion]], [[Single_Qubit_Gates]], [[Involutions]]
+Prerequisites: [Entanglement_Criterion](../01_Foundations/Entanglement_Criterion.md), [Single_Qubit_Gates](../02_Gates/Single_Qubit_Gates.md), [Involutions](../02_Gates/Involutions.md)

@@ -10,17 +10,17 @@ Things flagged while taking notes, to close before moving on.
       understand.
 
 > Both were marked *"complete before first note here"* — i.e. they are earlier
-> material in the book than [[01_Foundations/00_Foundations|Foundations]], and the
+> material in the book than [Foundations](../01_Foundations/00_Foundations.md), and the
 > vault currently starts mid-way through.
 
 ## Smaller things to verify
 
-- [ ] Confirm the encoding tables in [[Superdense_Coding]] and
-      [[Quantum_Teleportation]] against the book — the handwritten summary boxes had
+- [ ] Confirm the encoding tables in [Superdense_Coding](../03_Protocols/Superdense_Coding.md) and
+      [Quantum_Teleportation](../03_Protocols/Quantum_Teleportation.md) against the book — the handwritten summary boxes had
       $X$ and $Z$ swapped relative to the worked examples on the same pages.
 - [ ] Check whether the book uses $Y = \begin{bmatrix}0&1\\-1&0\end{bmatrix}$
       throughout or switches to the complex Pauli $Y$ later
-      (see [[Single_Qubit_Gates]]).
+      (see [Single_Qubit_Gates](../02_Gates/Single_Qubit_Gates.md)).
 - [ ] Re-derive the Fredkin truth table from the formula, both directions.
-- [ ] Decide when to switch to complex amplitudes — see [[Real_vs_Complex_Amplitudes]].
+- [ ] Decide when to switch to complex amplitudes — see [Real_vs_Complex_Amplitudes](Real_vs_Complex_Amplitudes.md).
       Trigger: the Bloch sphere, or the $S$/$T$ gates, whichever comes first.

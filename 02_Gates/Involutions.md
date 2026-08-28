@@ -25,7 +25,7 @@ $$\boxed{U^2 = I}$$
 
 ## Example: the Bell circuit is its own inverse
 
-![[circuit_bell_involution.png|420]]
+<img src="../_assets/circuit_bell_involution.png" width="420" alt="circuit bell involution">
 
 At the barrier — halfway through, after $H$ then CNOT — the state is:
 
@@ -35,5 +35,5 @@ Running the same two gates again in reverse order returns the qubits to
 $|0\rangle|0\rangle$.
 
 This "un-preparing" step is exactly the
-**reverse Bell circuit** used by Bob in [[Superdense_Coding]] and by Alice in
-[[Quantum_Teleportation]].
+**reverse Bell circuit** used by Bob in [Superdense_Coding](../03_Protocols/Superdense_Coding.md) and by Alice in
+[Quantum_Teleportation](../03_Protocols/Quantum_Teleportation.md).

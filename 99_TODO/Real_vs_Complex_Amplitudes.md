@@ -13,8 +13,8 @@ of this note today and the retrofit is free.
 Everything in this vault so far, and more:
 
 - superposition, measurement, and collapse
-- [[Tensor_Products]] and the [[Entanglement_Criterion]]
-- Bell states, [[Superdense_Coding]], [[Quantum_Teleportation]]
+- [Tensor_Products](../01_Foundations/Tensor_Products.md) and the [Entanglement_Criterion](../01_Foundations/Entanglement_Criterion.md)
+- Bell states, [Superdense_Coding](../03_Protocols/Superdense_Coding.md), [Quantum_Teleportation](../03_Protocols/Quantum_Teleportation.md)
 - Bell-inequality / CHSH violation — the actual proof that quantum ≠ classical
 - Deutsch–Jozsa and Grover's search
 
@@ -27,7 +27,7 @@ notational and geometric simplification, not a weaker theory.
 
 ### 1. $Y$ is not an involution without $i$
 
-This one is already in the vault. [[Single_Qubit_Gates]] uses
+This one is already in the vault. [Single_Qubit_Gates](../02_Gates/Single_Qubit_Gates.md) uses
 $Y = \begin{bmatrix}0&1\\-1&0\end{bmatrix}$, but:
 
 $$\begin{bmatrix}0&1\\-1&0\end{bmatrix}^2 = \begin{bmatrix}-1&0\\0&-1\end{bmatrix} = -I \;\neq\; I$$
@@ -35,13 +35,13 @@ $$\begin{bmatrix}0&1\\-1&0\end{bmatrix}^2 = \begin{bmatrix}-1&0\\0&-1\end{bmatri
 The real $Y$ is a $90°$ **rotation**, so applying it twice does not return the
 input. Only the true Pauli $Y = -i\begin{bmatrix}0&1\\-1&0\end{bmatrix} = \begin{bmatrix}0&-i\\i&0\end{bmatrix}$
 satisfies $Y^2 = I$, because $(-i)^2(-I) = I$. So the entry for $Y$ in the
-[[Involutions]] table is *only* correct in the complex version — the table even
+[Involutions](../02_Gates/Involutions.md) table is *only* correct in the complex version — the table even
 says "Pauli, with $-i$". $X$, $Z$ and $H$ are real, Hermitian and involutions with
 no complex numbers needed; $Y$ is the odd one out.
 
 ### 2. Relative phase has only two values
 
-With real amplitudes the "relative phase" of [[Single_Qubit_Gates]] is just a sign,
+With real amplitudes the "relative phase" of [Single_Qubit_Gates](../02_Gates/Single_Qubit_Gates.md) is just a sign,
 $\pm 1$. With complex amplitudes it is $e^{i\varphi}$ for any angle $\varphi$.
 Geometrically: real amplitudes trace a **circle** through
 $|0\rangle, |1\rangle, |{+}\rangle, |{-}\rangle$; complex amplitudes fill the whole
@@ -56,13 +56,13 @@ Unavailable until amplitudes go complex:
 | :--- | :--- |
 | $S$ and $T$ gates, $R_z(\theta)$, phase gate $P(\varphi)$ | they *are* phases: $\mathrm{diag}(1, e^{i\varphi})$ |
 | Universal gate sets (e.g. Clifford + $T$) | $T$ is a complex phase |
-| Quantum Fourier Transform, phase estimation, Shor | built on $\omega = e^{2\pi i/N}$ — worked through in [[Shors_Algorithm]] |
+| Quantum Fourier Transform, phase estimation, Shor | built on $\omega = e^{2\pi i/N}$ — worked through in [Shors_Algorithm](../04_Algorithms/Shors_Algorithm.md) |
 | Hamiltonian time evolution $e^{-iHt}$ | simulation, VQE, real hardware |
 | General Hermitian observables | $A = A^\dagger$ is a complex-conjugate condition |
 
 ## Where the real picture is already right
 
-The [[Entanglement_Criterion]] generalizes **verbatim**. Over $\mathbb{C}$ the test
+The [Entanglement_Criterion](../01_Foundations/Entanglement_Criterion.md) generalizes **verbatim**. Over $\mathbb{C}$ the test
 $ru = st$ is exactly "the $2\times2$ matrix of amplitudes has determinant zero",
 which is the separability condition for any two-qubit pure state. Nothing to redo.
 
@@ -88,4 +88,4 @@ kickback. Everything before that point genuinely does not need it.
 
 ---
 
-Related: [[Single_Qubit_Gates]], [[Involutions]], [[Entanglement_Criterion]], [[Open_Questions]]
+Related: [Single_Qubit_Gates](../02_Gates/Single_Qubit_Gates.md), [Involutions](../02_Gates/Involutions.md), [Entanglement_Criterion](../01_Foundations/Entanglement_Criterion.md), [Open_Questions](Open_Questions.md)
