@@ -142,15 +142,24 @@ nothing. Only `--submit` touches your quota.
 
 ### Credentials
 
-Never put a token in a file. Save it once, and the script picks it up:
+Credentials live in **`.env`** at the vault root. It is gitignored, so it stays on
+this machine and is never pushed.
 
-```python
-QiskitRuntimeService.save_account(
-    token=os.getenv("QISKIT_API_KEY"),
-    instance=os.getenv("INSTANCE"),
-    channel="ibm_quantum_platform",
-)
+```bash
+cp .env.example .env                      # then paste your token into .env
+uv run python _scripts/ibm_account.py     # verify it is read (token is masked)
 ```
+
+`.env.example` is the committed template and must never hold a real token.
+
+The token is passed straight to `QiskitRuntimeService` rather than written to
+`~/.qiskit/`, so it exists in exactly one file that you control. `.gitignore`
+covers `.env`, `.env.*`, `*.token`, `*.key`, `credentials.json` and `.qiskit/`.
+
+> [!warning] If a token ever does reach a commit
+> Rotate it at [quantum.cloud.ibm.com](https://quantum.cloud.ibm.com/) immediately.
+> Deleting the file in a later commit does not help — it stays in the history, and
+> if the repo was ever pushed it must be treated as compromised.
 
 ### The counting register is the whole ballgame
 

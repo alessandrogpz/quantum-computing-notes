@@ -13,13 +13,13 @@ SAFETY: --dry-run is the default. It transpiles against a local fake backend wit
 the same topology and gate set as a real device, reports the cost, and submits
 nothing. Only --submit queues a job against your account's quota.
 
-CREDENTIALS: never hardcode a token. Save it once, then this script picks it up:
+CREDENTIALS: kept in the vault's .env file, which is gitignored. Set it up once:
 
-    QiskitRuntimeService.save_account(
-        token=os.getenv("QISKIT_API_KEY"),
-        instance=os.getenv("INSTANCE"),
-        channel="ibm_quantum_platform",
-    )
+    cp .env.example .env        # then paste your token into .env
+    uv run python _scripts/ibm_account.py    # verify it is read correctly
+
+The token is passed straight to QiskitRuntimeService and never written anywhere
+else, so it lives in exactly one file that git will not touch.
 """
 
 import argparse
@@ -28,7 +28,9 @@ import sys
 from fractions import Fraction
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(ROOT / "_scripts"))
 from shors_15 import (  # noqa: E402
     N, N_WORK, VALID_A, c_amod15, factors_from_period, qft_dagger,
 )
@@ -140,9 +142,13 @@ def main() -> None:
         print("\nRe-run with --submit to queue this on real hardware.")
         return
 
-    from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
+    from ibm_account import describe, get_service
+    from qiskit_ibm_runtime import SamplerV2 as Sampler
 
-    service = QiskitRuntimeService()
+    print("Credentials:")
+    describe()
+    print()
+    service = get_service()
     backend = (service.backend(args.backend) if args.backend
                else service.least_busy(simulator=False, operational=True))
     print(f"Authenticated. Connected to: {backend.name}\n")

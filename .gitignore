@@ -20,6 +20,11 @@ Thumbs.db
 .claude/
 CLAUDE.md
 
-# IBM Quantum credentials
+# IBM Quantum credentials -- NEVER commit these
+.env
+.env.*
+!.env.example
 .qiskit/
 *.token
+*.key
+credentials.json

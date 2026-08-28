@@ -12,8 +12,10 @@ Primary source: *Quantum Computing for Everyone* — Chris Bernhardt.
 ```text
 quantum-comp-notes/
 ├── _assets/          generated circuit figures (do not edit by hand)
+├── .env.example           template for IBM credentials (.env is gitignored)
 ├── _scripts/
-│   └── build_figures.py   regenerates everything in _assets/
+│   ├── build_figures.py   regenerates everything in _assets/
+│   └── ibm_account.py     loads IBM credentials from .env
 ├── 01_Foundations/
 │   ├── Dirac_Notation.md
 │   ├── Tensor_Products.md
@@ -101,6 +103,21 @@ reproducible. If `.venv/` ever misbehaves, delete it; the next `uv run` rebuilds
 
 Obsidian settings in `.obsidian/` are committed too, except `workspace.json`
 (per-machine pane layout) and downloaded plugin bundles.
+
+## IBM Quantum Credentials
+
+Scripts that reach real hardware read their credentials from **`.env`** at the
+vault root, which is gitignored:
+
+```bash
+cp .env.example .env                      # paste your token into .env
+uv run python _scripts/ibm_account.py     # verify (prints a masked token)
+```
+
+Never put a token in `.env.example` — that file is committed. `.gitignore` covers
+`.env`, `.env.*`, `*.token`, `*.key`, `credentials.json` and `.qiskit/`. If a token
+ever does land in a commit, rotate it rather than trying to delete it: it stays in
+the git history.
 
 ## Circuit Diagrams
 
