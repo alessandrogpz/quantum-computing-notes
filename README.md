@@ -27,6 +27,9 @@ quantum-comp-notes/
 ├── 03_Protocols/
 │   ├── Superdense_Coding.md
 │   └── Quantum_Teleportation.md
+├── 04_Algorithms/
+│   ├── Shors_Algorithm.md
+│   └── shors_15.py
 └── 99_TODO/
     ├── Open_Questions.md
     └── Real_vs_Complex_Amplitudes.md
@@ -37,6 +40,7 @@ quantum-comp-notes/
 | **[01_Foundations](01_Foundations/00_Foundations.md)** | Dirac notation, tensor products, the entanglement criterion, measurement from either party's perspective. |
 | **[02_Gates](02_Gates/00_Gates.md)** | Reversible classical gates (CNOT, Toffoli, Fredkin), the move to qubits, single-qubit gates, involutions. |
 | **[03_Protocols](03_Protocols/00_Protocols.md)** | Superdense coding and quantum teleportation. |
+| **[04_Algorithms](04_Algorithms/00_Algorithms.md)** | Quantum algorithms with runnable implementations. Shor's algorithm factoring 15. |
 | **[99_TODO](99_TODO/00_TODO.md)** | Parked: open questions, and the deferred move to complex amplitudes. |
 
 ---

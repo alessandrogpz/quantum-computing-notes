@@ -19,6 +19,7 @@ regeneration needed — Obsidian scales the image to that width in pixels.
 | `circuit_superdense_10.png` | 560 | `![[circuit_superdense_10.png\|560]]` |
 | `circuit_superdense_11.png` | 560 | `![[circuit_superdense_11.png\|560]]` |
 | `circuit_teleportation.png` | 760 | `![[circuit_teleportation.png\|760]]` |
+| `circuit_shor_qpe.png` | 820 | `![[circuit_shor_qpe.png\|820]]` |
 
 Rebuild everything:
 

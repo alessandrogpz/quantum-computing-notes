@@ -16,7 +16,9 @@ in the book, so the vault currently starts mid-way through. Worth closing whenev
 something earlier feels like it is missing a foundation.
 
 **[[Real_vs_Complex_Amplitudes]]** — the trigger is concrete: the **Bloch sphere**,
-or the $S$/$T$ gates, whichever comes first. Until then real amplitudes are enough,
+or the $S$/$T$ gates, whichever comes first. [[Shors_Algorithm]] has already
+crossed it — its inverse QFT uses phases $e^{-i\pi/2^k}$ that have no real form, so
+that note is the worked example of why this cannot be deferred forever. Until then real amplitudes are enough,
 and the note explains why that is a legitimate simplification rather than a gap.
 
 > [!tip] Cheap insurance

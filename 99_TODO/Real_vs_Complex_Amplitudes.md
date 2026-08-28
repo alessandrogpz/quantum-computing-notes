@@ -56,7 +56,7 @@ Unavailable until amplitudes go complex:
 | :--- | :--- |
 | $S$ and $T$ gates, $R_z(\theta)$, phase gate $P(\varphi)$ | they *are* phases: $\mathrm{diag}(1, e^{i\varphi})$ |
 | Universal gate sets (e.g. Clifford + $T$) | $T$ is a complex phase |
-| Quantum Fourier Transform, phase estimation, Shor | built on $\omega = e^{2\pi i/N}$ |
+| Quantum Fourier Transform, phase estimation, Shor | built on $\omega = e^{2\pi i/N}$ — worked through in [[Shors_Algorithm]] |
 | Hamiltonian time evolution $e^{-iHt}$ | simulation, VQE, real hardware |
 | General Hermitian observables | $A = A^\dagger$ is a complex-conjugate condition |
 
