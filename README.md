@@ -129,6 +129,20 @@ Display width is the one you want almost every time — edit the number after th
 uv run python _scripts/build_figures.py --only teleport --scale 1.4
 ```
 
+### Checking for drift
+
+Figures are generated, so a dependency upgrade can silently change all of them —
+a new matplotlib can shift font metrics or gate rendering without a single circuit
+changing. To catch that:
+
+```bash
+uv run python _scripts/build_figures.py --check
+```
+
+It regenerates everything into a temporary directory, compares byte for byte
+against what is committed, and exits non-zero on any difference. `_assets/` is not
+touched. Run it after `uv lock --upgrade`; nothing else in the repo would notice.
+
 Barrier labels are limited to 15 characters and cannot contain LaTeX (Qiskit
 escapes and truncates them), so equations belonging to a figure go in the note
 beneath it, where MathJax renders them properly. The script asserts on labels that
