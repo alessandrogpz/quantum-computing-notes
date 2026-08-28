@@ -29,7 +29,8 @@ quantum-comp-notes/
 │   └── Quantum_Teleportation.md
 ├── 04_Algorithms/
 │   ├── Shors_Algorithm.md
-│   └── shors_15.py
+│   ├── shors_15.py         exact simulation, no account needed
+│   └── shors_15_ibm.py     transpiled for real IBM hardware
 └── 99_TODO/
     ├── Open_Questions.md
     └── Real_vs_Complex_Amplitudes.md

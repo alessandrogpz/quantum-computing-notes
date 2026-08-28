@@ -4,7 +4,8 @@ Quantum algorithms, each with a runnable Qiskit implementation beside the note.
 
 | Note | Code | Does what |
 | :--- | :--- | :--- |
-| [[Shors_Algorithm]] | [`shors_15.py`](shors_15.py) | factors $N = 15$ into $3 \times 5$ by period-finding |
+| [[Shors_Algorithm]] | [`shors_15.py`](shors_15.py) | factors $N = 15$ into $3 \times 5$ by period-finding, simulated exactly |
+| [[Shors_Algorithm#Running it on real IBM hardware\|↳ on hardware]] | [`shors_15_ibm.py`](shors_15_ibm.py) | the same circuit transpiled and submitted to an IBM device |
 
 ## The line where complex amplitudes become mandatory
 
