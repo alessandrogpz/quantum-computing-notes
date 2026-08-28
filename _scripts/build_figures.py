@@ -4,6 +4,13 @@
     uv run python _scripts/build_figures.py --only teleport # just matching ones
     uv run python _scripts/build_figures.py --dpi 300       # sharper files
     uv run python _scripts/build_figures.py --scale 1.4     # bigger gate boxes
+    uv run python _scripts/build_figures.py --check         # has anything drifted?
+
+--check regenerates every figure into a temporary directory and compares it byte
+for byte with what is committed, without touching _assets/. It exits non-zero on
+any difference. Run it after `uv lock --upgrade`: a matplotlib or qiskit release
+can change font metrics or gate rendering, which would silently alter every image
+in the vault. Nothing else in the repo would catch that.
 
 There are three independent size knobs. Reach for them in this order:
 
@@ -26,6 +33,8 @@ Embed snippets for every figure are listed in _assets/00_Figures.md.
 
 import argparse
 import pathlib
+import sys
+import tempfile
 
 import matplotlib.pyplot as plt
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
@@ -179,28 +188,69 @@ def _teleportation():
 
 # =============================================================================
 
+def render(entry, outdir: pathlib.Path, args) -> pathlib.Path:
+    """Draw one registered figure into outdir and return the path written."""
+    name, fn, _width, scale, draw_kw = entry
+    fig = fn().draw("mpl", style=STYLE, scale=scale or args.scale, **draw_kw)
+    path = outdir / f"{name}.png"
+    fig.savefig(path, dpi=args.dpi, bbox_inches="tight", facecolor="#ffffff")
+    plt.close(fig)
+    return path
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--dpi", type=int, default=DPI, help=f"PNG resolution (default {DPI})")
     ap.add_argument("--scale", type=float, default=SCALE,
                     help=f"gate box size relative to wires (default {SCALE})")
     ap.add_argument("--only", default=None, help="only build figures whose name contains this")
+    ap.add_argument("--check", action="store_true",
+                    help="compare against the committed figures instead of overwriting them")
     args = ap.parse_args()
+
+    selected = [f for f in FIGURES if not args.only or args.only in f[0]]
+    if not selected:
+        sys.exit(f"no figures match --only {args.only!r}")
+
+    if args.check:
+        sys.exit(check(selected, args))
 
     OUT.mkdir(exist_ok=True)
     built = []
-
-    for name, fn, width, scale, draw_kw in FIGURES:
-        if args.only and args.only not in name:
-            continue
-        fig = fn().draw("mpl", style=STYLE, scale=scale or args.scale, **draw_kw)
-        fig.savefig(OUT / f"{name}.png", dpi=args.dpi, bbox_inches="tight", facecolor="#ffffff")
-        plt.close(fig)
-        built.append((name, width))
-        print(f"wrote {name}.png  (embed width {width})")
+    for entry in selected:
+        render(entry, OUT, args)
+        built.append((entry[0], entry[2]))
+        print(f"wrote {entry[0]}.png  (embed width {entry[2]})")
 
     if not args.only:
         write_manifest(built, args)
+
+
+def check(selected, args) -> int:
+    """Regenerate into a temp dir and diff against _assets/. Returns an exit code."""
+    drifted, missing = [], []
+    with tempfile.TemporaryDirectory() as td:
+        for entry in selected:
+            fresh = render(entry, pathlib.Path(td), args)
+            committed = OUT / fresh.name
+            if not committed.exists():
+                missing.append(fresh.name)
+            elif committed.read_bytes() != fresh.read_bytes():
+                drifted.append(fresh.name)
+
+    for name in missing:
+        print(f"MISSING  {name}  (registered but not in {OUT.name}/)")
+    for name in drifted:
+        print(f"DRIFTED  {name}  (committed image differs from a fresh render)")
+
+    if not drifted and not missing:
+        print(f"{len(selected)} figures match the committed images.")
+        return 0
+
+    print(f"\n{len(drifted)} drifted, {len(missing)} missing, "
+          f"{len(selected) - len(drifted) - len(missing)} unchanged.")
+    print("Rebuild and review the diff:  uv run python _scripts/build_figures.py")
+    return 1
 
 
 def write_manifest(built: list[tuple[str, int]], args) -> None:
