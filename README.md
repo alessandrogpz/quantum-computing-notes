@@ -11,32 +11,33 @@ Primary source: *Quantum Computing for Everyone* — Chris Bernhardt.
 
 ```text
 quantum-comp-notes/
-├── 00_Open_Questions.md
-├── _attachments/          generated circuit figures (do not edit by hand)
+├── _assets/          generated circuit figures (do not edit by hand)
 ├── _scripts/
-│   └── build_figures.py   regenerates everything in _attachments/
+│   └── build_figures.py   regenerates everything in _assets/
 ├── 01_Foundations/
 │   ├── Dirac_Notation.md
 │   ├── Tensor_Products.md
 │   ├── Entanglement_Criterion.md
-│   ├── Measurement_and_Perspective.md
-│   └── Real_vs_Complex_Amplitudes.md
+│   └── Measurement_and_Perspective.md
 ├── 02_Gates/
 │   ├── Reversible_Classical_Gates.md
 │   ├── From_Classical_To_Quantum.md
 │   ├── Single_Qubit_Gates.md
 │   └── Involutions.md
-└── 03_Protocols/
-    ├── Superdense_Coding.md
-    └── Quantum_Teleportation.md
+├── 03_Protocols/
+│   ├── Superdense_Coding.md
+│   └── Quantum_Teleportation.md
+└── 99_TODO/
+    ├── Open_Questions.md
+    └── Real_vs_Complex_Amplitudes.md
 ```
 
 | Section | Description |
 | :--- | :--- |
-| **[01_Foundations](01_Foundations/00_Foundations.md)** | Dirac notation, tensor products, the entanglement criterion, measurement from either party's perspective, real vs complex amplitudes. |
+| **[01_Foundations](01_Foundations/00_Foundations.md)** | Dirac notation, tensor products, the entanglement criterion, measurement from either party's perspective. |
 | **[02_Gates](02_Gates/00_Gates.md)** | Reversible classical gates (CNOT, Toffoli, Fredkin), the move to qubits, single-qubit gates, involutions. |
 | **[03_Protocols](03_Protocols/00_Protocols.md)** | Superdense coding and quantum teleportation. |
-| **[00_Open_Questions](00_Open_Questions.md)** | Loose ends and material to go back and read. |
+| **[99_TODO](99_TODO/00_TODO.md)** | Parked: open questions, and the deferred move to complex amplitudes. |
 
 ---
 
@@ -100,7 +101,7 @@ Obsidian settings in `.obsidian/` are committed too, except `workspace.json`
 
 Circuit figures are **generated from Qiskit, not drawn by hand**. The circuit that
 appears in a note is the same object that runs, so the picture cannot drift from
-the physics. `_attachments/00_Figures.md` lists every figure with its embed snippet.
+the physics. `_assets/00_Figures.md` lists every figure with its embed snippet.
 
 To change or add one: edit `_scripts/build_figures.py`, then
 
@@ -139,7 +140,7 @@ would be truncated.
 | :--- | :--- | :--- |
 | Understanding | `.md` notes | wikilinks, backlinks, graph view, search, clean git diffs |
 | Computation | `.ipynb` / `.py` | run it, plot it, get the statevector back |
-| Figures | `_attachments/` via `_scripts/` | generated, never stale |
+| Figures | `_assets/` via `_scripts/` | generated, never stale |
 
 Notebooks are for *doing*; markdown notes are for *keeping*. When a notebook
 produces something worth remembering, the conclusion goes in a note that links back
