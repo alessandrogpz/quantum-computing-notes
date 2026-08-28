@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.ipynb_checkpoints/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor configurations
+.vscode/
+.idea/
+.obsidian/workspace.json
+
+# Obsidian plugin bundles (plugin list is kept in community-plugins.json)
+.obsidian/plugins/
+
+# Local machine-specific tool settings
+.claude/
+CLAUDE.md
+
+# IBM Quantum credentials
+.qiskit/
+*.token

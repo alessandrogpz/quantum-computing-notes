@@ -1,0 +1,10 @@
+[project]
+name = "quantum-comp-notes"
+version = "0.1.0"
+description = "Qiskit environment for the quantum computing notes vault"
+requires-python = ">=3.11"
+dependencies = [
+    "qiskit>=1.2",
+    "matplotlib>=3.9",
+    "pylatexenc>=2.10",
+]
