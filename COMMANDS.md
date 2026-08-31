@@ -10,14 +10,153 @@ script, not your shell. If `python` alone fails with `ModuleNotFoundError`, see
 
 | I want to... | Command |
 | :--- | :--- |
+| Distribute a key with BB84 | `uv run python 03_Protocols/bb84.py` |
+| Watch BB84 catch an eavesdropper | `uv run python 03_Protocols/bb84.py --eve` |
+| Distribute a key with E91 | `uv run python 03_Protocols/e91.py` |
+| Watch a Bell violation collapse | `uv run python 03_Protocols/e91.py --eve` |
+| Run a protocol on real IBM hardware | `uv run python 03_Protocols/e91_ibm.py --submit` |
+| Measure a backend's own error floor | run the `_ibm.py` script **without** `--eve` first |
 | Factor 15 on my laptop | `uv run python 04_Algorithms/shors_15.py` |
 | See what a hardware run would cost | `uv run python 04_Algorithms/shors_15_ibm.py` |
 | Actually run it on IBM | `uv run python 04_Algorithms/shors_15_ibm.py --submit` |
 | Re-read a job I already submitted | `uv run python 04_Algorithms/shors_15_ibm.py --job <id>` |
-| Prove a weak result is real | add `--shots 16384` |
+| Prove a weak result is real | add `--shots 16384` (Shor) or raise `--rounds` (QKD) |
 | Check my IBM token works | `uv run python _scripts/ibm_account.py` |
 | Rebuild the circuit images | `uv run python _scripts/build_figures.py` |
 | Check nothing broke | `uv run python _scripts/build_figures.py --check` and `uv run python _scripts/check_links.py` |
+
+> [!tip] The `_ibm.py` scripts never submit anything unless you pass `--submit`
+> Without it you get a dry run: transpiled against a local fake backend, with the
+> cost and the expected result quality reported, and nothing queued.
+
+---
+
+## `03_Protocols/bb84.py` — BB84 key distribution, simulated
+
+Exact simulation on your laptop. No IBM account, no noise, always works.
+Every number it prints is one the [BB84](03_Protocols/BB84.md) note derives.
+
+| Flag | Default | What it does |
+| :--- | :-- | :--- |
+| `--rounds N` | `512` | Qubits Alice sends. Half survive sifting, then `--check` of those are spent on the test, so the key is roughly `N/4` bits. Raise it to tighten every percentage below. |
+| `--eve` | *off* | Put an intercept-resend eavesdropper on the channel. She guesses a basis, copies the qubit, and passes it on — which corrupts 25% of the sifted bits. |
+| `--check F` | `0.5` | Fraction of the sifted bits sacrificed to detect Eve. They are announced publicly and discarded. Lower it to keep more key at the cost of a weaker test; each compared bit is an independent 3-in-4 chance for Eve to slip past. |
+| `--threshold F` | `0.11` | Error rate above which the key is thrown away. 11% is the Shor–Preskill bound, where the extractable key rate `1 - 2h(Q)` reaches zero. Lower it if you trust your channel; never raise it. |
+| `--table N` | `12` | Print the first N rounds bit by bit — Alice's bit and basis, Eve's, Bob's, whether it survived sifting and whether it errored. `0` prints none. |
+| `--seed N` | `0` | Seeds every classical choice, so a run reproduces exactly. Change it for a different key. |
+
+```bash
+uv run python 03_Protocols/bb84.py
+uv run python 03_Protocols/bb84.py --eve
+uv run python 03_Protocols/bb84.py --rounds 4096 --check 0.25 --table 0
+```
+
+### Reading the output
+
+| Section | What to look for |
+| :--- | :--- |
+| Sifting | `bases agreed` should sit near 50%. It is a coin flip per round, nothing more |
+| `mismatches` | **The whole protocol.** 0% clean, ~25% with Eve. Compare against the abort threshold, not against zero |
+| `survives ... with probability` | How likely an eavesdropper was to get away with it. Falls off a cliff with the number of compared bits |
+| What Eve came away with | ~75%, and unusable to her, because the key is discarded. Printed as an oracle's view — neither Alice nor Bob could compute it |
+| `they differ in N places` | Errors left in the surviving key. Real BB84 removes these with error correction and privacy amplification, which this stops short of |
+
+---
+
+## `03_Protocols/bb84_ibm.py` — BB84 on real hardware
+
+Same protocol, packed into a single circuit and transpiled for an IBM device.
+**Safe by default: without `--submit` it submits nothing.**
+
+| Flag | Default | What it does |
+| :--- | :-- | :--- |
+| `--submit` | *off* | Actually queue a job and spend quota. Without it you get a dry run: transpiles against a local fake backend, reports depth, gate count and the QBER floor the device's calibration implies. **Always dry-run first.** |
+| `--rounds N` | `512` | As above. Sets the shot count: the busiest of the 16 configurations decides it. |
+| `--eve` | *off* | As above. Costs one extra qubit per configuration, for Eve's probe. |
+| `--check F` | `0.5` | As above. |
+| `--threshold F` | `0.11` | As above. On hardware the device's own noise eats into this budget before Eve arrives. |
+| `--table N` | `12` | As above. |
+| `--seed N` | `0` | As above — and it is what makes `--job` work, since the same seed draws the same rounds for the shots to be dealt to. |
+| `--job ID` | — | Skip running; fetch a job you already submitted and re-analyse it. Pass the same `--seed` and `--eve` it was submitted with. |
+| `--backend NAME` | least busy | Pin a specific device, e.g. `--backend ibm_fez`. Useful when the per-configuration table fingers one bad qubit. |
+| `--opt-level {0,1,2,3}` | `3` | Transpiler effort. The barriers between Alice, Eve and Bob survive every level — without them level 3 would cancel the two basis rotations against each other. |
+
+```bash
+uv run python 03_Protocols/bb84_ibm.py                    # dry run first
+uv run python 03_Protocols/bb84_ibm.py --submit           # measure the noise floor
+uv run python 03_Protocols/bb84_ibm.py --submit --eve     # then compare against it
+```
+
+> [!warning] Run without `--eve` first, and keep the number
+> A real channel is noisy, and BB84 cannot tell noise from an eavesdropper — both
+> are just errors in the sifted bits. The clean-channel run measures the device's
+> own error floor, and every later run has to be read against that rather than
+> against 0%.
+
+---
+
+## `03_Protocols/e91.py` — E91 key distribution, simulated
+
+Exact simulation on your laptop. Detects the eavesdropper through a Bell inequality
+violation rather than through disturbance. Derivations in [E91](03_Protocols/E91.md).
+
+| Flag | Default | What it does |
+| :--- | :-- | :--- |
+| `--rounds N` | `2048` | Entangled pairs distributed. Only 2/9 become key bits and 4/9 feed the CHSH test, so this needs to be much larger than BB84's — the error bar on `S` is what decides whether a violation means anything. |
+| `--eve` | *off* | Let an eavesdropper entangle herself with Alice's qubit. This halves every correlation, dropping `S` from 2.828 to 1.414 and putting 25% errors in the key. |
+| `--table N` | `12` | Print the first N rounds: both settings, both outcomes, Eve's, and whether the round was used for key, for the test, or discarded. `0` prints none. |
+| `--seed N` | `0` | Seeds every classical choice, so a run reproduces exactly. |
+
+```bash
+uv run python 03_Protocols/e91.py
+uv run python 03_Protocols/e91.py --eve
+uv run python 03_Protocols/e91.py --rounds 8192 --table 0
+```
+
+### Reading the output
+
+| Section | What to look for |
+| :--- | :--- |
+| The 3×3 grid | Where the rounds fell. 2/9 key, 4/9 test, 3/9 discarded |
+| `E measured` vs `E ideal` | Each correlation against `cos(θa − θb)`. Systematic gaps mean something is wrong; scatter is just sampling |
+| `S = ... +/- ...` | **The security check.** Above 2 no pre-existing bits could have produced these correlations. 2.828 is Tsirelson's ceiling, 1.414 is what an intercepted pair gives |
+| `VIOLATED by N sigma` | Below ~3σ the result is not evidence of anything. Raise `--rounds` |
+| `Alice and Bob differ in` | 0% clean, ~25% intercepted — the same number BB84 produces, from different physics |
+| No `--check` flag | Deliberate. E91's test uses rounds that were being discarded anyway, so it costs no key bits |
+
+---
+
+## `03_Protocols/e91_ibm.py` — E91 on real hardware
+
+Same protocol, packed into a single circuit and transpiled for an IBM device.
+**Safe by default: without `--submit` it submits nothing.**
+
+This is the protocol in this vault that current hardware runs best — a round is one
+entangling gate and two rotations, and the CHSH violation survives real noise.
+
+| Flag | Default | What it does |
+| :--- | :-- | :--- |
+| `--submit` | *off* | Actually queue a job and spend quota. Without it, a dry run turns the backend's calibration into a predicted `S` before you spend anything. **Always dry-run first.** |
+| `--rounds N` | `2048` | As above. Sets the shot count: the busiest of the 18 configurations decides it. |
+| `--eve` | *off* | As above. Costs one extra qubit per configuration, for Eve's probe. |
+| `--table N` | `12` | As above. |
+| `--seed N` | `0` | As above — and what makes `--job` re-readable. |
+| `--job ID` | — | Fetch a job you already submitted and re-analyse it. Pass the same `--seed` and `--eve`. |
+| `--backend NAME` | least busy | Pin a specific device. Worth using when the per-configuration table shows one bad pair. |
+| `--opt-level {0,1,2,3}` | `3` | Transpiler effort. Barriers keep the Bell preparation, Eve and the rotations from being folded together. |
+
+```bash
+uv run python 03_Protocols/e91_ibm.py                     # dry run, predicts S
+uv run python 03_Protocols/e91_ibm.py --submit            # the device's own ceiling
+uv run python 03_Protocols/e91_ibm.py --submit --eve      # then watch it collapse
+```
+
+| Section | What to look for |
+| :--- | :--- |
+| `predicted S` | What the backend's calibration says to expect, before spending anything. Below 2 means do not bother |
+| Correlation per configuration | One row far off `ideal` is a bad qubit pair, not the protocol. Retry with `--backend` |
+| `measured S` | 2.4–2.7 is a good real device. Anything above 2 by several sigma is a genuine violation |
+| Noise or an eavesdropper? | Distance in sigma to each hypothesis. Noise and Eve push `S` the same way, so the clean-channel run is the only baseline that means anything |
 
 ---
 

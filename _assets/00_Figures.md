@@ -21,6 +21,10 @@ To resize one in a note, change its `width`. No regeneration needed.
 | `circuit_superdense_10.png` | 560 | `<img src="../_assets/circuit_superdense_10.png" width="560" alt="circuit superdense 10">` |
 | `circuit_superdense_11.png` | 560 | `<img src="../_assets/circuit_superdense_11.png" width="560" alt="circuit superdense 11">` |
 | `circuit_teleportation.png` | 760 | `<img src="../_assets/circuit_teleportation.png" width="760" alt="circuit teleportation">` |
+| `circuit_bb84_round.png` | 560 | `<img src="../_assets/circuit_bb84_round.png" width="560" alt="circuit bb84 round">` |
+| `circuit_bb84_eve.png` | 680 | `<img src="../_assets/circuit_bb84_eve.png" width="680" alt="circuit bb84 eve">` |
+| `circuit_e91_round.png` | 620 | `<img src="../_assets/circuit_e91_round.png" width="620" alt="circuit e91 round">` |
+| `circuit_e91_eve.png` | 740 | `<img src="../_assets/circuit_e91_eve.png" width="740" alt="circuit e91 eve">` |
 | `circuit_shor_qpe.png` | 820 | `<img src="../_assets/circuit_shor_qpe.png" width="820" alt="circuit shor qpe">` |
 
 Rebuild everything:

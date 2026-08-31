@@ -58,19 +58,6 @@ def period_circuit(a: int, n_count: int) -> QuantumCircuit:
     return qc
 
 
-def median_2q_error(backend) -> float | None:
-    """Median two-qubit gate error from the backend's calibration data."""
-    errs = []
-    for name in ("cz", "ecr", "cx"):
-        if name in backend.target:
-            errs += [p.error for p in backend.target[name].values()
-                     if p is not None and p.error is not None]
-    if not errs:
-        return None
-    errs.sort()
-    return errs[len(errs) // 2]
-
-
 def report_cost(isa, backend, n_count: int) -> None:
     ops = isa.count_ops()
     two_q = sum(n for g, n in ops.items() if g in ("cz", "cx", "ecr", "cy"))
@@ -81,7 +68,8 @@ def report_cost(isa, backend, n_count: int) -> None:
     print(f"  total gates      {sum(ops.values())}")
     print(f"  op breakdown     {dict(sorted(ops.items(), key=lambda kv: -kv[1]))}")
 
-    err = median_2q_error(backend)
+    from ibm_account import median_error
+    err = median_error(backend, "cz", "ecr", "cx")
     if err:
         survival = (1 - err) ** two_q
         print(f"\n  median 2q error  {err:.2e}")
@@ -100,32 +88,6 @@ def ideal_support(a: int, n_count: int) -> set[str]:
     qc = period_circuit(a, n_count)
     counts = StatevectorSampler().run([qc], shots=8192).result()[0].data.c.get_counts()
     return {k for k, v in counts.items() if v > 8192 * 0.01}
-
-
-def provenance(job, backend) -> None:
-    """Everything that proves where this ran. None of it comes from us."""
-    cfg = getattr(backend, "configuration", lambda: None)()
-    is_sim = getattr(cfg, "simulator", None)
-    print("\nProvenance -- reported by IBM, not by this script:")
-    print(f"  job id      {job.job_id()}")
-    print(f"  backend     {backend.name}")
-    print(f"  simulator   {is_sim if is_sim is not None else 'unknown'}"
-          f"{'   <-- NOT real hardware!' if is_sim else ''}")
-    print(f"  qubits      {backend.num_qubits}")
-    print(f"  status      {job.status()}")
-    for label, value in (("created", getattr(job, "creation_date", None)),
-                         ("instance", getattr(job, "instance", None)),
-                         ("primitive", getattr(job, "primitive_id", None))):
-        if value:
-            print(f"  {label:<11} {value}")
-    try:
-        usage = job.usage()
-        print(f"  usage       {usage}")
-    except Exception:
-        pass
-    print(f"\n  Cross-check independently at https://quantum.cloud.ibm.com/workloads")
-    print(f"  by searching for job {job.job_id()}. If it is not listed there,")
-    print(f"  it did not run on IBM hardware.")
 
 
 def verify_quantum(counts: dict[str, int], a: int, n_count: int) -> None:
@@ -257,7 +219,7 @@ def main() -> None:
     args = build_parser().parse_args()
 
     if args.job:
-        from ibm_account import get_service
+        from ibm_account import get_service, provenance
         service = get_service()
         job = service.job(args.job)
         print(f"Retrieved job {args.job}: status {job.status()}")
@@ -284,7 +246,7 @@ def main() -> None:
         print("\nRe-run with --submit to queue this on real hardware.")
         return
 
-    from ibm_account import describe, get_service
+    from ibm_account import describe, get_service, provenance
     from qiskit_ibm_runtime import SamplerV2 as Sampler
 
     print("Credentials:")

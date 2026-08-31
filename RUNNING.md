@@ -55,6 +55,14 @@ B while you are working, if typing the prefix gets old. They are interchangeable
 
 
 ```bash
+# Key distribution
+uv run python 03_Protocols/bb84.py                    # BB84, clean channel
+uv run python 03_Protocols/bb84.py --eve              # BB84 catching an eavesdropper
+uv run python 03_Protocols/e91.py                     # E91, Bell violation intact
+uv run python 03_Protocols/e91.py --eve               # E91 losing the violation
+uv run python 03_Protocols/bb84_ibm.py                # what a hardware run would cost
+uv run python 03_Protocols/e91_ibm.py --submit        # really queue an IBM job
+
 # Algorithms
 uv run python 04_Algorithms/shors_15.py               # factor 15, exact simulation
 uv run python 04_Algorithms/shors_15.py --a 7         # a different base
