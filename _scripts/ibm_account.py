@@ -1,4 +1,4 @@
-"""IBM Quantum credentials, loaded from the vault's gitignored .env file.
+"""IBM Quantum plumbing: credentials, backend calibration, job provenance.
 
 Fill in .env (never .env.example) and any script here can reach hardware:
 
@@ -10,6 +10,10 @@ Fill in .env (never .env.example) and any script here can reach hardware:
 
 The token is passed straight to QiskitRuntimeService rather than written to
 ~/.qiskit/, so your credentials live in exactly one file that you control.
+
+The two helpers at the bottom -- median_error() and provenance() -- are here
+rather than in one of the algorithm scripts because every script that talks to
+hardware needs them, and a second copy is a copy that drifts.
 """
 
 import pathlib
@@ -101,6 +105,56 @@ def get_service():
             if needle in text:
                 raise SystemExit(f"\nIBM rejected your credentials.\n\n  {advice}\n") from exc
         raise
+
+
+# --------------------------------------------------------------------------
+# Backend calibration and job provenance
+# --------------------------------------------------------------------------
+
+def median_error(backend, *names: str) -> float | None:
+    """Median error of the named instructions, from the backend's calibration.
+
+        median_error(backend, "cz", "ecr", "cx")   # two-qubit gates
+        median_error(backend, "measure")           # readout
+
+    A median rather than a mean, because one dead qubit should not dominate the
+    picture of a device with a hundred good ones. Returns None if the backend
+    reports no calibration for any of the names, which fake backends sometimes do.
+    """
+    errors = []
+    for name in names:
+        if name in backend.target:
+            errors += [prop.error for prop in backend.target[name].values()
+                       if prop is not None and prop.error is not None]
+    if not errors:
+        return None
+    errors.sort()
+    return errors[len(errors) // 2]
+
+
+def provenance(job, backend) -> None:
+    """Everything that proves where a job ran. None of it comes from us."""
+    cfg = getattr(backend, "configuration", lambda: None)()
+    is_sim = getattr(cfg, "simulator", None)
+    print("\nProvenance -- reported by IBM, not by this script:")
+    print(f"  job id      {job.job_id()}")
+    print(f"  backend     {backend.name}")
+    print(f"  simulator   {is_sim if is_sim is not None else 'unknown'}"
+          f"{'   <-- NOT real hardware!' if is_sim else ''}")
+    print(f"  qubits      {backend.num_qubits}")
+    print(f"  status      {job.status()}")
+    for label, value in (("created", getattr(job, "creation_date", None)),
+                         ("instance", getattr(job, "instance", None)),
+                         ("primitive", getattr(job, "primitive_id", None))):
+        if value:
+            print(f"  {label:<11} {value}")
+    try:
+        print(f"  usage       {job.usage()}")
+    except Exception:
+        pass
+    print("\n  Cross-check independently at https://quantum.cloud.ibm.com/workloads")
+    print(f"  by searching for job {job.job_id()}. If it is not listed there,")
+    print("  it did not run on IBM hardware.")
 
 
 def describe() -> None:

@@ -35,6 +35,10 @@ DOC = ROOT / "COMMANDS.md"
 
 # Scripts whose flags COMMANDS.md documents, in the order they appear there.
 DOCUMENTED = (
+    "03_Protocols/bb84.py",
+    "03_Protocols/bb84_ibm.py",
+    "03_Protocols/e91.py",
+    "03_Protocols/e91_ibm.py",
     "04_Algorithms/shors_15.py",
     "04_Algorithms/shors_15_ibm.py",
     "_scripts/build_figures.py",
@@ -53,7 +57,7 @@ def load_module(rel: str) -> types.ModuleType:
     sys.path.insert(0, str(path.parent))
     module = types.ModuleType(path.stem)
     module.__file__ = str(path)
-    exec(compile(path.read_text(), str(path), "exec"), module.__dict__)
+    exec(compile(path.read_text(encoding="utf-8"), str(path), "exec"), module.__dict__)
     return module
 
 
@@ -101,7 +105,7 @@ def documented_flags(section: str) -> dict[str, str | None]:
 
 
 def main() -> int:
-    text = DOC.read_text()
+    text = DOC.read_text(encoding="utf-8")
     problems: list[str] = []
     checked = 0
 
@@ -134,7 +138,7 @@ def main() -> int:
     # All three must agree, or someone setting up a new machine is misled.
     loader = load_module("_scripts/ibm_account.py")
     code_vars = set(loader.REQUIRED) | set(loader.OPTIONAL)
-    example_vars = set(re.findall(r"^([A-Z][A-Z_]*)=", (ROOT / ".env.example").read_text(), re.M))
+    example_vars = set(re.findall(r"^([A-Z][A-Z_]*)=", (ROOT / ".env.example").read_text(encoding="utf-8"), re.M))
     doc_vars = set(re.findall(r"^\|\s*`([A-Z][A-Z_]*)`\s*\|", text, re.M))
     checked += len(code_vars)
 
@@ -151,7 +155,7 @@ def main() -> int:
 
     # Any command shown in any doc must point at a file that exists.
     for md in ROOT.glob("*.md"):
-        for path in re.findall(r"uv run python (\S+\.py)", md.read_text()):
+        for path in re.findall(r"uv run python (\S+\.py)", md.read_text(encoding="utf-8")):
             checked += 1
             if not (ROOT / path).exists():
                 problems.append(f"{md.name}: references missing script {path}")

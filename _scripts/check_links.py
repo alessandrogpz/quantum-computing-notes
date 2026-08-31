@@ -42,7 +42,7 @@ def anchors(path: pathlib.Path) -> set[str]:
     spans first would invent a slug GitHub never generates.
     """
     found = set()
-    body = FENCE.sub("", path.read_text())
+    body = FENCE.sub("", path.read_text(encoding="utf-8"))
     for line in body.splitlines():
         if line.startswith("#"):
             h = line.lstrip("#").strip().lower().replace("`", "")
@@ -57,7 +57,7 @@ def main() -> int:
     checked = 0
 
     for p in notes:
-        body = strip_code(p.read_text())
+        body = strip_code(p.read_text(encoding="utf-8"))
         where = p.relative_to(ROOT)
 
         for stray in WIKI.findall(body):
