@@ -53,6 +53,19 @@ EVE_QBER = 0.25
 FIELDS = ("alice", "bob", "eve")
 
 
+# ============================================================================
+#  THE PROTOCOL -- this is the algorithm. Everything above is configuration,
+#  everything below the REPORTING banner is printing.
+# ============================================================================
+#
+#   draw_rounds   each side picks a measurement angle at random
+#   emit_round    the entangled pair, the two rotations, Eve's probe if present
+#   by_setting    group the outcomes by which pair of angles was used
+#   correlation   E = <a.b> for one setting pair
+#   chsh          combine four of those into S, with an error bar
+#   extract_key   the rounds where both angles matched
+#   run           the steps above, in order, returning S and the verdict
+#
 # --------------------------------------------------------------------------
 # One round of the protocol
 # --------------------------------------------------------------------------
@@ -137,6 +150,78 @@ def correlation(samples: list[tuple]) -> float:
     return (2 * agree - len(samples)) / len(samples)
 
 
+def by_setting(rounds: list[tuple], outcomes: list[tuple]) -> dict[tuple, list]:
+    """Group the outcomes by which pair of axes was used."""
+    grouped: dict[tuple, list] = {}
+    for r, o in zip(rounds, outcomes):
+        grouped.setdefault((r[0], r[1]), []).append(o)
+    return grouped
+
+
+def chsh(grouped: dict[tuple, list]) -> tuple[float, float, list]:
+    """The CHSH sum and its standard error, from the four test settings.
+
+    Also returns one row per term, (setting, sign, rounds, E), so the report can
+    show the working without this having to print anything itself.
+    """
+    s, variance, terms = 0.0, 0.0, []
+    for setting, sign in CHSH_TERMS.items():
+        samples = grouped.get(setting, [])
+        e = correlation(samples)
+        s += sign * e
+        if samples:
+            # var(E) for a +/-1 valued mean, from n independent rounds.
+            variance += (1 - e**2) / len(samples)
+        terms.append((setting, sign, len(samples), e))
+    return s, math.sqrt(variance), terms
+
+
+def extract_key(rounds, outcomes) -> dict:
+    """The key rounds: both axes pointed the same way, so outcomes should match.
+
+    Note what is NOT spent here. The CHSH test used the mismatched rounds, which
+    BB84 discards. E91 gets its security check for free.
+    """
+    key_rounds = [(r, o) for r, o in zip(rounds, outcomes)
+                  if (r[0], r[1]) in KEY_SETTINGS]
+    alice_key = [o[0] for _, o in key_rounds]
+    bob_key = [o[1] for _, o in key_rounds]
+    disagree = sum(1 for a, b in zip(alice_key, bob_key) if a != b)
+    return {
+        "key_rounds": key_rounds, "alice_key": alice_key, "bob_key": bob_key,
+        "disagree": disagree,
+        "qber": disagree / len(key_rounds) if key_rounds else 0.0,
+    }
+
+
+def run(rounds, outcomes, *, eve_present: bool) -> dict:
+    """The protocol itself. No printing -- just S, the verdict, and the keys.
+
+        group by setting  ->  correlations  ->  CHSH sum  ->  violated or not
+
+    A violation means the bits did not exist before measurement and nothing else
+    was entangled to them. That is the security check; the key is a by-product.
+    """
+    grouped = by_setting(rounds, outcomes)
+    s, sigma, terms = chsh(grouped)
+    excess = (s - CLASSICAL_BOUND) / sigma if sigma else 0.0
+
+    result = {"grouped": grouped, "s": s, "sigma": sigma, "excess": excess,
+              "terms": terms, "violated": s > CLASSICAL_BOUND}
+    result.update(extract_key(rounds, outcomes))
+
+    if eve_present and result["key_rounds"]:
+        result["eve_knows"] = sum(1 for (_, o) in result["key_rounds"]
+                                  if o[2] == o[0]) / len(result["key_rounds"])
+    else:
+        result["eve_knows"] = None
+    return result
+
+
+# ============================================================================
+#  REPORTING -- printing only. Nothing below this line affects the protocol.
+# ============================================================================
+
 def ideal_correlation(a_setting: int, b_setting: int, eve: bool) -> float:
     """cos of the angle between the two axes -- halved if Eve is entangled to one."""
     delta = ALICE_ANGLES[a_setting] - BOB_ANGLES[b_setting]
@@ -147,14 +232,6 @@ def role(setting: tuple) -> str:
     if setting in KEY_SETTINGS:
         return "key"
     return "test" if setting in CHSH_TERMS else "-"
-
-
-def by_setting(rounds: list[tuple], outcomes: list[tuple]) -> dict[tuple, list]:
-    """Group the outcomes by which pair of axes was used."""
-    grouped: dict[tuple, list] = {}
-    for r, o in zip(rounds, outcomes):
-        grouped.setdefault((r[0], r[1]), []).append(o)
-    return grouped
 
 
 def print_grid(grouped: dict[tuple, list], total: int) -> None:
@@ -189,34 +266,21 @@ def print_table(rounds, outcomes, n: int) -> None:
         print(row + f"  {role((a_setting, b_setting)):>8}")
 
 
-def chsh(grouped: dict[tuple, list], eve: bool) -> tuple[float, float]:
-    """The CHSH sum and its standard error, from the four test settings."""
+def report(rounds, outcomes, result: dict, *, table, eve_present: bool, floor: str) -> None:
+    """Print the run. `floor` is what a clean channel would show here."""
+    if table:
+        print_table(rounds, outcomes, table)
+    print_grid(result["grouped"], len(rounds))
+
+    s, sigma, excess = result["s"], result["sigma"], result["excess"]
+
     print("\nCorrelations on the four test settings:")
     print(f"  {'setting':>9}  {'rounds':>6}  {'sign':>4}  {'E measured':>10}  "
           f"{'E ideal':>8}")
-    s, variance = 0.0, 0.0
-    for setting, sign in CHSH_TERMS.items():
-        samples = grouped.get(setting, [])
-        e = correlation(samples)
-        s += sign * e
-        if samples:
-            # var(E) for a +/-1 valued mean, from n independent rounds.
-            variance += (1 - e**2) / len(samples)
+    for setting, sign, n, e in result["terms"]:
         label = f"{ANGLE_NAMES[0][setting[0]][0]},{ANGLE_NAMES[1][setting[1]][0]}"
-        print(f"  {label:>9}  {len(samples):>6}  {sign:>+4}  {e:>+10.3f}  "
-              f"{ideal_correlation(*setting, eve):>+8.3f}")
-    return s, math.sqrt(variance)
-
-
-def analyse(rounds, outcomes, *, table, eve_present: bool, floor: str) -> dict:
-    """Print the whole run, and return the numbers the verdict rests on."""
-    grouped = by_setting(rounds, outcomes)
-    if table:
-        print_table(rounds, outcomes, table)
-    print_grid(grouped, len(rounds))
-
-    s, sigma = chsh(grouped, eve_present)
-    excess = (s - CLASSICAL_BOUND) / sigma if sigma else 0.0
+        print(f"  {label:>9}  {n:>6}  {sign:>+4}  {e:>+10.3f}  "
+              f"{ideal_correlation(*setting, eve_present):>+8.3f}")
 
     print("\nCHSH:")
     print("  S = E(A1,B1) - E(A1,B3) + E(A3,B1) + E(A3,B3)")
@@ -232,12 +296,11 @@ def analyse(rounds, outcomes, *, table, eve_present: bool, floor: str) -> dict:
         print("   fluctuation in the estimate of S, not a violation of quantum")
         print("   mechanics -- the error bar covers it. More rounds shrink it.)")
 
-    violated = s > CLASSICAL_BOUND
-    if violated and excess > 3:
+    if result["violated"] and excess > 3:
         print(f"\n  -> VIOLATED by {excess:.1f} sigma. Whatever produced these bits, they")
         print("     did not have values before they were measured, and nothing was")
         print("     entangled to them but each other. The channel is clean.")
-    elif violated:
+    elif result["violated"]:
         print(f"\n  -> above 2, but only by {excess:.1f} sigma. Not enough to conclude"
               f"\n     anything. Raise --rounds.")
     else:
@@ -245,36 +308,27 @@ def analyse(rounds, outcomes, *, table, eve_present: bool, floor: str) -> dict:
         print("     bits that were simply decided in advance -- which is exactly what")
         print("     an eavesdropper leaves behind. ABORT: the key is not secret.")
 
-    # Key rounds: same axis on both sides, so the outcomes should be identical.
-    key_rounds = [(r, o) for r, o in zip(rounds, outcomes)
-                  if (r[0], r[1]) in KEY_SETTINGS]
-    alice_key = [o[0] for _, o in key_rounds]
-    bob_key = [o[1] for _, o in key_rounds]
-    disagree = sum(1 for a, b in zip(alice_key, bob_key) if a != b)
-    qber = disagree / len(key_rounds) if key_rounds else 0.0
-
+    key_rounds, qber = result["key_rounds"], result["qber"]
     print(f"\nThe key -- rounds where both axes pointed the same way:")
     print(f"  key rounds         {len(key_rounds)}  "
           f"({len(key_rounds) / len(rounds):.1%} of the run, expected 22.2% = 2/9)")
-    print(f"  Alice and Bob differ in {disagree} = {qber:.1%}")
+    print(f"  Alice and Bob differ in {result['disagree']} = {qber:.1%}")
     print(f"  a clean pair would give 0%, an intercepted one {EVE_QBER:.0%}")
     print("\n  Note what did NOT happen: no key bits were spent on the security")
     print("  check. The CHSH test used the mismatched rounds, which BB84 throws")
     print("  away. That is E91's structural advantage.")
 
-    if eve_present and key_rounds:
-        known = sum(1 for (_, o) in key_rounds if o[2] == o[0])
+    if result["eve_knows"] is not None:
+        known = round(result["eve_knows"] * len(key_rounds))
         print("\nWhat Eve came away with (an oracle's view, not Alice's or Bob's):")
         print(f"  key bits she has right  {known}/{len(key_rounds)} = "
-              f"{known / len(key_rounds):.1%}")
+              f"{result['eve_knows']:.1%}")
         print(f"  guessing would give     50.0%")
         print(f"  prediction              {eve_prediction():.1%}  (see E91.md)")
 
+    alice_key, bob_key = result["alice_key"], result["bob_key"]
     print(f"\n  Alice  {as_hex(alice_key)[:48]}{'...' if len(alice_key) > 192 else ''}")
     print(f"  Bob    {as_hex(bob_key)[:48]}{'...' if len(bob_key) > 192 else ''}")
-
-    return {"s": s, "sigma": sigma, "excess": excess, "violated": violated,
-            "qber": qber, "key_bits": len(key_rounds), "disagree": disagree}
 
 
 def eve_prediction() -> float:
@@ -331,10 +385,12 @@ def main() -> None:
         measured={"alice": 0, "bob": 1, "eve": 2} if eve else {"alice": 0, "bob": 1},
         ibm=args.ibm, backend_name=args.backend,
     )
-    analyse(rounds, deal(rounds, pools), table=args.table, eve_present=args.eve,
-            floor=("hardware noise lowers S on its own, so a dip is not proof of Eve"
-                   if args.ibm else
-                   "nothing here is noisy, so the only thing that can lower S is Eve"))
+    outcomes = deal(rounds, pools)
+    result = run(rounds, outcomes, eve_present=args.eve)
+    report(rounds, outcomes, result, table=args.table, eve_present=args.eve,
+           floor=("hardware noise lowers S on its own, so a dip is not proof of Eve"
+                  if args.ibm else
+                  "nothing here is noisy, so the only thing that can lower S is Eve"))
 
 
 if __name__ == "__main__":

@@ -36,6 +36,18 @@ EVE_QBER = 0.25
 SHOR_PRESKILL = 0.11
 
 
+# ============================================================================
+#  THE PROTOCOL -- this is the algorithm. Everything above is configuration,
+#  everything below the REPORTING banner is printing.
+# ============================================================================
+#
+#   draw_rounds   Alice's bit and basis, Bob's basis, Eve's basis if present
+#   emit_round    the quantum circuit for one round
+#   sift          keep the rounds where Alice and Bob chose the same basis
+#   check_bits    sacrifice some of those to look for Eve
+#   error_rate    how often Bob disagrees on the sacrificed bits
+#   run           the four steps above, in order, returning the verdict
+#
 # --------------------------------------------------------------------------
 # One round of the protocol
 # --------------------------------------------------------------------------
@@ -124,6 +136,62 @@ def sift(rounds: list[tuple]) -> list[int]:
     return [i for i, (_, a_basis, _, b_basis) in enumerate(rounds) if a_basis == b_basis]
 
 
+def check_bits(sifted: list[int], fraction: float, rng: random.Random) -> list[int]:
+    """The sifted rounds Alice and Bob sacrifice to look for Eve.
+
+    These are announced openly and then discarded whatever they show, because
+    announcing them is what makes them useless to an eavesdropper.
+    """
+    return sorted(rng.sample(sifted, int(round(len(sifted) * fraction))))
+
+
+def error_rate(rounds, outcomes, checked: list[int]) -> float:
+    """QBER: the fraction of announced bits where Bob disagrees with Alice.
+
+    On a clean channel this is 0. Intercept-resend drives it to 25%, because Eve
+    guesses the wrong basis half the time and then Bob errs half of those.
+    """
+    if not checked:
+        return 0.0
+    return sum(1 for i in checked if outcomes[i][0] != rounds[i][0]) / len(checked)
+
+
+def run(rounds, outcomes, *, check, threshold, rng) -> dict:
+    """The protocol itself. No printing -- just the decision and the keys.
+
+        sift  ->  sacrifice some bits  ->  measure the error rate  ->  accept or abort
+
+    Everything Alice and Bob can actually compute in a real run is here. The one
+    exception is `eve_knows`, which no real participant could ever calculate; it is
+    returned because a demonstration is allowed to look at the answer.
+    """
+    sifted = sift(rounds)
+    checked = check_bits(sifted, check, rng)
+    key_idx = [i for i in sifted if i not in set(checked)]
+
+    qber = error_rate(rounds, outcomes, checked)
+    accepted = qber <= threshold
+
+    alice_key = [rounds[i][0] for i in key_idx]
+    bob_key = [outcomes[i][0] for i in key_idx]
+
+    eve_knows = None
+    if rounds[0][2] is not None and key_idx:
+        eve_knows = sum(1 for i in key_idx if outcomes[i][1] == rounds[i][0]) / len(key_idx)
+
+    return {
+        "sifted": sifted, "checked": checked, "key_idx": key_idx,
+        "qber": qber, "accepted": accepted,
+        "alice_key": alice_key, "bob_key": bob_key,
+        "disagree": sum(1 for a, b in zip(alice_key, bob_key) if a != b),
+        "eve_knows": eve_knows,
+    }
+
+
+# ============================================================================
+#  REPORTING -- printing only. Nothing below this line affects the protocol.
+# ============================================================================
+
 def print_table(rounds: list[tuple], outcomes: list[tuple], kept: set, n: int) -> None:
     """The textbook picture: a few rounds, spelled out column by column."""
     eve = rounds[0][2] is not None
@@ -144,16 +212,11 @@ def print_table(rounds: list[tuple], outcomes: list[tuple], kept: set, n: int) -
         print(row + f" {flag:>5}")
 
 
-def analyse(rounds, outcomes, *, check, threshold, table, rng, floor) -> dict:
-    """Print the whole run, and return the numbers the verdict rests on.
-
-    `floor` describes the error rate a clean channel would show here, which is the
-    one thing an exact simulator and a real device disagree about.
-    """
-    sifted = sift(rounds)
-    checked = sorted(rng.sample(sifted, int(round(len(sifted) * check))))
-    checked_set = set(checked)
-    key_idx = [i for i in sifted if i not in checked_set]
+def report(rounds, outcomes, result: dict, *, threshold, table, floor) -> None:
+    """Print the run. `floor` is the error rate a clean channel would show, the one
+    thing an exact simulator and a real device disagree about."""
+    sifted, checked, key_idx = result["sifted"], result["checked"], result["key_idx"]
+    qber = result["qber"]
 
     if table:
         print_table(rounds, outcomes, set(sifted), table)
@@ -165,9 +228,7 @@ def analyse(rounds, outcomes, *, check, threshold, table, rng, floor) -> dict:
     print(f"  sacrificed to test {len(checked)}")
     print(f"  left for the key   {len(key_idx)}")
 
-    errors = sum(1 for i in checked if outcomes[i][0] != rounds[i][0])
-    qber = errors / len(checked) if checked else 0.0
-
+    errors = round(qber * len(checked))
     print("\nError check -- the sacrificed bits are announced and compared:")
     print(f"  mismatches         {errors}/{len(checked)} = {qber:.1%}")
     print(f"  clean channel      {floor}")
@@ -178,41 +239,31 @@ def analyse(rounds, outcomes, *, check, threshold, table, rng, floor) -> dict:
         print(f"  an Eve who was there survives all {len(checked)} comparisons with "
               f"probability {(1 - EVE_QBER) ** len(checked):.1e}")
 
-    accepted = qber <= threshold
-    if accepted:
+    if result["accepted"]:
         print(f"\n  -> ACCEPT. {qber:.1%} is within tolerance, so the key is kept.")
     else:
         print(f"\n  -> ABORT. {qber:.1%} is too high. The key is thrown away and the run"
               f"\n     repeated. Nothing leaked, because nothing was used.")
 
-    # What Eve actually holds. Neither Alice nor Bob can compute this in a real run;
-    # it is printed because a demonstration is allowed to look at the answer.
-    if rounds[0][2] is not None and key_idx:
-        known = sum(1 for i in key_idx if outcomes[i][1] == rounds[i][0])
+    if result["eve_knows"] is not None:
+        known = round(result["eve_knows"] * len(key_idx))
         print("\nWhat Eve came away with (an oracle's view, not Alice's or Bob's):")
         print(f"  bits of the surviving key she has right  {known}/{len(key_idx)} = "
-              f"{known / len(key_idx):.1%}")
+              f"{result['eve_knows']:.1%}")
         print(f"  guessing at random would give            50.0%")
         print("  She knows a bit for certain whenever she guessed Alice's basis, and")
         print("  gets half of the rest by luck: 0.5 + 0.5 x 0.5 = 75%.")
 
-    alice_key = [rounds[i][0] for i in key_idx]
-    bob_key = [outcomes[i][0] for i in key_idx]
-    disagree = sum(1 for a, b in zip(alice_key, bob_key) if a != b)
-
+    alice_key, bob_key = result["alice_key"], result["bob_key"]
     print(f"\nThe key ({len(alice_key)} bits):")
     print(f"  Alice  {as_hex(alice_key)[:48]}{'...' if len(alice_key) > 192 else ''}")
     print(f"  Bob    {as_hex(bob_key)[:48]}{'...' if len(bob_key) > 192 else ''}")
-    print(f"  bits where they disagree: {disagree}")
-    if disagree:
+    print(f"  bits where they disagree: {result['disagree']}")
+    if result["disagree"]:
         print("  Real BB84 would now run error correction and privacy amplification:")
         print("  classical post-processing that repairs those disagreements and shrinks")
         print("  the key until Eve's expected information about it is negligible. Not")
         print("  implemented here -- this stops where the accept/abort decision is made.")
-
-    return {"sifted": len(sifted), "checked": len(checked), "errors": errors,
-            "qber": qber, "accepted": accepted, "key_bits": len(key_idx),
-            "disagree": disagree}
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -259,11 +310,12 @@ def main() -> None:
         measured={"bob": 0, "eve": 1} if eve else {"bob": 0},
         ibm=args.ibm, backend_name=args.backend,
     )
-    analyse(rounds, outcomes := deal(rounds, pools),
-            check=args.check, threshold=args.threshold, table=args.table, rng=rng,
-            floor=("hardware readout error alone puts a few percent here, before Eve"
-                   if args.ibm else
-                   "would give 0% here -- nothing in this simulation is noisy"))
+    outcomes = deal(rounds, pools)
+    result = run(rounds, outcomes, check=args.check, threshold=args.threshold, rng=rng)
+    report(rounds, outcomes, result, threshold=args.threshold, table=args.table,
+           floor=("hardware readout error alone puts a few percent here, before Eve"
+                  if args.ibm else
+                  "would give 0% here -- nothing in this simulation is noisy"))
 
 
 if __name__ == "__main__":
