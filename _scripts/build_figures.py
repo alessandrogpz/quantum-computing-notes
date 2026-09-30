@@ -18,6 +18,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "_assets"
 sys.path[:0] = [str(ROOT / "03_Protocols"), str(ROOT / "04_Algorithms")]
 
+import bb84  # noqa: E402
+import e91  # noqa: E402
 import shors  # noqa: E402
 import superdense_coding  # noqa: E402
 import teleportation  # noqa: E402
@@ -62,3 +64,11 @@ save(superdense_coding.circuit("00"), "circuit_superdense_00")
 save(superdense_coding.circuit("01"), "circuit_superdense_01")
 save(teleportation.circuit(math.pi / 3), "circuit_teleportation", fold=-1)
 save(shors.circuit(2, 3), "circuit_shor_qpe", fold=-1)
+
+# BB84 and E91 rounds, clean and with Eve. The barriers separate the parties;
+# they are in the circuit to stop the transpiler folding Alice's rotation into
+# Bob's, and happen to be where a reader wants a divider too.
+save(bb84.round_circuit((1, "X", None, "X")), "circuit_bb84_round")
+save(bb84.round_circuit((1, "X", "Z", "X")), "circuit_bb84_eve")
+save(e91.round_circuit((0, 0, None)), "circuit_e91_round")
+save(e91.round_circuit((0, 0, "Z")), "circuit_e91_eve")

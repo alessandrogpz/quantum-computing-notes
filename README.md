@@ -17,7 +17,7 @@ hardware with `--ibm`.
 | :--- | :--- |
 | **[01_Foundations](01_Foundations/00_Foundations.md)** | Dirac notation, tensor products, the entanglement criterion, measurement from either party's perspective |
 | **[02_Gates](02_Gates/00_Gates.md)** | Reversible classical gates, the move to qubits, single-qubit gates, involutions |
-| **[03_Protocols](03_Protocols/00_Protocols.md)** | Superdense coding, quantum teleportation |
+| **[03_Protocols](03_Protocols/00_Protocols.md)** | Superdense coding, teleportation, and the BB84 and E91 key-distribution protocols |
 | **[04_Algorithms](04_Algorithms/00_Algorithms.md)** | Shor's algorithm factoring 15 |
 
 Each folder has a `00_` index note with the reading order.
@@ -27,6 +27,8 @@ Each folder has a `00_` index note with the reading order.
 ```bash
 uv run python 03_Protocols/superdense_coding.py
 uv run python 03_Protocols/teleportation.py
+uv run python 03_Protocols/bb84.py --eve      # key distribution, with an eavesdropper
+uv run python 03_Protocols/e91.py             # entanglement-based, tests CHSH
 uv run python 04_Algorithms/shors.py
 ```
 
