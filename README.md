@@ -25,6 +25,7 @@ Each folder has a `00_` index note with the reading order.
 ## Running the code
 
 ```bash
+uv run python 02_Gates/gates.py                 # each gate's matrix and truth table
 uv run python 03_Protocols/superdense_coding.py
 uv run python 03_Protocols/teleportation.py
 uv run python 03_Protocols/bb84.py --eve      # key distribution, with an eavesdropper

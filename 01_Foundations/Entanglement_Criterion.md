@@ -16,7 +16,7 @@ The two are identical. This gives the criterion:
 
 $$\boxed{
 \begin{aligned}
-ru = st &\;\Rightarrow\; \text{particles are NOT entangled (separable)} \\
+ru = st &\;\Rightarrow\; \text{particles are NOT entangled (separable)} \cr
 ru \neq st &\;\Rightarrow\; \text{particles ARE entangled}
 \end{aligned}}$$
 

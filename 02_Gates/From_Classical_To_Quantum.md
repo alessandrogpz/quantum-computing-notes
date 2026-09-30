@@ -6,8 +6,8 @@ computing**, so a few things need defining first.
 
 ## Definitions
 
-- Use the **standard basis** $\left(\begin{bmatrix}1\\0\end{bmatrix}, \begin{bmatrix}0\\1\end{bmatrix}\right)$,
-  where $|0\rangle = \begin{bmatrix}1\\0\end{bmatrix}$ and $|1\rangle = \begin{bmatrix}0\\1\end{bmatrix}$.
+- Use the **standard basis** $\left(\begin{bmatrix}1\cr0\end{bmatrix}, \begin{bmatrix}0\cr1\end{bmatrix}\right)$,
+  where $|0\rangle = \begin{bmatrix}1\cr0\end{bmatrix}$ and $|1\rangle = \begin{bmatrix}0\cr1\end{bmatrix}$.
 - Qubits have the form $a_0|0\rangle + a_1|1\rangle$ with $a_0^2 + a_1^2 = 1$;
   $a_0$ and $a_1$ are probability amplitudes.
 - Usually the system has more than one qubit. For a 2-qubit system the basis is the

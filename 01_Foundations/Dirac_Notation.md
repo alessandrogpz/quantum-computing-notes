@@ -6,7 +6,7 @@ Notation for writing quantum states as vectors.
 
 A **ket** $|k\rangle$ is a column vector:
 
-$$|k\rangle = \begin{bmatrix} k_1 \\ k_2 \\ k_3 \end{bmatrix}$$
+$$|k\rangle = \begin{bmatrix} k_1 \cr k_2 \cr k_3 \end{bmatrix}$$
 
 A **bra** $\langle b|$ is a row vector:
 
@@ -30,7 +30,7 @@ probability $c_1^2$.
 
 Unless stated otherwise, the **standard basis** is used:
 
-$$|0\rangle = \begin{bmatrix} 1 \\ 0 \end{bmatrix}, \qquad |1\rangle = \begin{bmatrix} 0 \\ 1 \end{bmatrix}$$
+$$|0\rangle = \begin{bmatrix} 1 \cr 0 \end{bmatrix}, \qquad |1\rangle = \begin{bmatrix} 0 \cr 1 \end{bmatrix}$$
 
 and a qubit has the form $a_0|0\rangle + a_1|1\rangle$ with $a_0^2 + a_1^2 = 1$.
 

@@ -46,10 +46,10 @@ which confirms $|v\rangle \otimes |w\rangle$ is a valid two-qubit state.
 Tensoring the standard basis with itself gives the four basis vectors of a
 two-qubit system:
 
-$$\left(\begin{bmatrix}1\\0\end{bmatrix} \otimes \begin{bmatrix}1\\0\end{bmatrix},\;
-\begin{bmatrix}1\\0\end{bmatrix} \otimes \begin{bmatrix}0\\1\end{bmatrix},\;
-\begin{bmatrix}0\\1\end{bmatrix} \otimes \begin{bmatrix}1\\0\end{bmatrix},\;
-\begin{bmatrix}0\\1\end{bmatrix} \otimes \begin{bmatrix}0\\1\end{bmatrix}\right)$$
+$$\left(\begin{bmatrix}1\cr0\end{bmatrix} \otimes \begin{bmatrix}1\cr0\end{bmatrix},\;
+\begin{bmatrix}1\cr0\end{bmatrix} \otimes \begin{bmatrix}0\cr1\end{bmatrix},\;
+\begin{bmatrix}0\cr1\end{bmatrix} \otimes \begin{bmatrix}1\cr0\end{bmatrix},\;
+\begin{bmatrix}0\cr1\end{bmatrix} \otimes \begin{bmatrix}0\cr1\end{bmatrix}\right)$$
 
 $$= \big(|0\rangle|0\rangle,\; |0\rangle|1\rangle,\; |1\rangle|0\rangle,\; |1\rangle|1\rangle\big)
 = \big(|00\rangle,\; |01\rangle,\; |10\rangle,\; |11\rangle\big)$$
