@@ -18,11 +18,6 @@ $$\boxed{U^2 = I}$$
 | Toffoli (CCNOT) | 3 | flip target if both controls are 1 |
 | Fredkin (CSWAP) | 3 | swap targets if control is 1 |
 
-> [!warning] Correction to the original note
-> The handwritten table listed **CSWAP as acting on 2 qubits**. CSWAP *is* the
-> Fredkin gate and acts on **3** qubits (1 control + 2 targets). The 2-qubit
-> uncontrolled version is plain **SWAP**, listed above in its place.
-
 ## Example: the Bell circuit is its own inverse
 
 <img src="../_assets/circuit_bell_involution.png" width="420" alt="circuit bell involution">

@@ -1,5 +1,7 @@
 # Superdense Coding
 
+Code: [`superdense_coding.py`](superdense_coding.py) — runs locally or on IBM hardware with `--ibm`.
+
 The protocol that can transfer **2 classical bits** by physically transferring
 **one qubit**.
 
@@ -23,7 +25,6 @@ $$\tfrac{1}{\sqrt2}|00\rangle + \tfrac{1}{\sqrt2}|11\rangle$$
 | 01 | $X$ |
 | 10 | $Z$ |
 | 11 | $Y$ (or $ZX$) |
-
 
 ## Example — Alice wants to send 00
 
@@ -56,26 +57,6 @@ $$\text{Entangle} \;\to\; \text{separate} \;\to\; \text{Alice applies gate} \;\t
 The key point: Alice acting on **only her own qubit** moves the *pair* between four
 mutually distinguishable Bell states, and Bob — holding both qubits at the end —
 can tell them apart perfectly.
-
-## In Qiskit
-
-```python
-from qiskit import QuantumCircuit
-from qiskit.quantum_info import Statevector
-
-def superdense(bits: str) -> QuantumCircuit:
-    qc = QuantumCircuit(2)
-    qc.h(0); qc.cx(0, 1)              # Bell prep (shared beforehand)
-    if bits in ("01", "11"): qc.x(0)  # Alice encodes on her qubit
-    if bits in ("10", "11"): qc.z(0)
-    qc.cx(0, 1); qc.h(0)              # Bob decodes (reverse Bell)
-    return qc
-
-for b in ("00", "01", "10", "11"):
-    # Qiskit prints little-endian, so the string comes out reversed:
-    # sending "01" prints "10". Read it as (q0, q1) = (Alice, Bob).
-    print(b, Statevector(superdense(b)).probabilities_dict())
-```
 
 ---
 

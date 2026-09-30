@@ -28,12 +28,12 @@ $$Y\big(a_0|0\rangle + a_1|1\rangle\big) = a_1|0\rangle - a_0|1\rangle$$
 So $X$ is a pure swap, and $Y$ inverts $|0\rangle \leftrightarrow |1\rangle$ **and**
 changes the relative phase.
 
-> [!note] Convention
-> The **Pauli $Y$** is usually defined as $-i$ times the matrix used here:
-> $$-i\begin{bmatrix}0 & 1\\ -1 & 0\end{bmatrix} = \begin{bmatrix}0 & -i\\ i & 0\end{bmatrix}$$
-> The global factor $-i$ has no observable effect on its own, so the real-valued
-> version above is used for the arithmetic in these notes. Qiskit's `qc.y(q)`
-> applies the standard complex Pauli $Y$.
+The Pauli $Y$ is usually defined as $-i$ times the matrix above:
+
+$$-i\begin{bmatrix}0 & 1\\ -1 & 0\end{bmatrix} = \begin{bmatrix}0 & -i\\ i & 0\end{bmatrix}$$
+
+The real version is used here because these notes avoid complex numbers, but only
+the complex one squares to $I$. Qiskit's `qc.y()` applies the complex Pauli $Y$.
 
 ## Hadamard
 

@@ -73,9 +73,7 @@ qc.cx(0, 1)    # CNOT: control 0, target 1
 print(Statevector(qc))   # 1/√2 |00> + 1/√2 |11>
 ```
 
-> [!warning] Bit ordering
-> Qiskit is **little-endian**: in the label `|q1 q0⟩` the *rightmost* character is
-> qubit 0. These notes write the control/first qubit on the left. For symmetric
-> states like $\tfrac{1}{\sqrt2}(|00\rangle + |11\rangle)$ it makes no difference,
-> but for e.g. $|10\rangle$ it does — check the qubit indices, not the position in
-> the string.
+Qiskit is little-endian: in the label `|q1 q0>` the rightmost character is qubit
+0, while these notes write the first qubit on the left. It makes no difference for
+a symmetric state like $\tfrac{1}{\sqrt2}(|00\rangle + |11\rangle)$, but it does
+for $|10\rangle$.

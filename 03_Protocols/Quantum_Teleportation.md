@@ -1,5 +1,7 @@
 # Quantum Teleportation
 
+Code: [`teleportation.py`](teleportation.py) — runs locally or on IBM hardware with `--ibm`.
+
 The protocol that can transfer **1 qubit** by physically transferring **2 classical
 bits**. It is the opposite of [Superdense_Coding](Superdense_Coding.md): there, Bob applies the reverse
 Bell circuit and Alice applies the gate; here, **Alice applies the reverse Bell
@@ -25,7 +27,6 @@ $$\tfrac{1}{\sqrt2}|00\rangle + \tfrac{1}{\sqrt2}|11\rangle$$
 | 01 | $X$ |
 | 10 | $Z$ |
 | 11 | $Y$ (or $ZX$) |
-
 
 ## Circuit — Alice's side
 
@@ -98,36 +99,6 @@ top of this note.
   for quantum.
 - **Distributed quantum computing.**
 - **Inside error-corrected computers** — the biggest practical use.
-
-## In Qiskit
-
-```python
-import numpy as np
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
-
-psi = QuantumRegister(1, "psi")   # the state to teleport
-a   = QuantumRegister(1, "a")     # Alice's half of the pair
-b   = QuantumRegister(1, "b")     # Bob's half
-c0, c1 = ClassicalRegister(1, "c0"), ClassicalRegister(1, "c1")
-
-qc = QuantumCircuit(psi, a, b, c0, c1)
-qc.ry(np.pi / 3, psi)             # some arbitrary a|0> + b|1>
-qc.barrier()
-
-qc.h(a); qc.cx(a, b)              # shared entangled pair
-qc.barrier()
-
-qc.cx(psi, a); qc.h(psi)          # Alice: reverse Bell circuit
-qc.measure(psi, c0); qc.measure(a, c1)
-qc.barrier()
-
-with qc.if_test((c1, 1)):         # Bob's corrections
-    qc.x(b)
-with qc.if_test((c0, 1)):
-    qc.z(b)
-
-print(qc.draw())
-```
 
 ---
 
