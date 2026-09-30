@@ -59,7 +59,7 @@ every correlation, and a correlation of $\tfrac12$ is a 25% error rate.
 | Resource | single qubits, prepared and sent | entangled pairs from a shared source |
 | Cost of the security check | **sacrificed key bits** | free — rounds that were discarded anyway |
 | Key yield | $\tfrac12$ of rounds, minus the check | $\tfrac29$ of rounds |
-| Attack signature | QBER $0 \to 25\%$ | $S: 2\sqrt2 \to \sqrt2$, QBER $0 \to 25\%$ |
+| Attack signature | QBER 0 → 25% | $S: 2\sqrt2 \to \sqrt2$, and QBER 0 → 25% |
 | Runs on today's hardware | yes — 1 qubit per round | yes — the CHSH violation survives real noise |
 
 Prerequisites: [Entanglement_Criterion](../01_Foundations/Entanglement_Criterion.md), [Single_Qubit_Gates](../02_Gates/Single_Qubit_Gates.md), [Involutions](../02_Gates/Involutions.md), [Measurement_and_Perspective](../01_Foundations/Measurement_and_Perspective.md)

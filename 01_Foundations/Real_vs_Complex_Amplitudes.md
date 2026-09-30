@@ -22,10 +22,12 @@ violation, and Grover's search.
 
 $$\begin{bmatrix}0&1\cr-1&0\end{bmatrix}^2 = -I \neq I$$
 
-It is a $90°$ rotation, so applying it twice does not return the input. Only
-$Y = -i\begin{bmatrix}0&1\cr-1&0\end{bmatrix} = \begin{bmatrix}0&-i\cr i&0\end{bmatrix}$
-satisfies $Y^2 = I$. $X$, $Z$ and $H$ need no complex numbers; $Y$ is the
-exception. See [Involutions](../02_Gates/Involutions.md).
+It is a $90°$ rotation, so applying it twice does not return the input. Only the
+complex Pauli $Y$ satisfies $Y^2 = I$:
+
+$$Y = -i\begin{bmatrix}0&1\cr-1&0\end{bmatrix} = \begin{bmatrix}0&-i\cr i&0\end{bmatrix}$$
+
+$X$, $Z$ and $H$ need no complex numbers; $Y$ is the exception. See [Involutions](../02_Gates/Involutions.md).
 
 **Relative phase has only two values.** With real amplitudes the phase is a sign,
 $\pm 1$; with complex ones it is $e^{i\varphi}$ for any angle. Geometrically, real

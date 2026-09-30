@@ -17,7 +17,7 @@ halves of a bracket, $\langle b | k \rangle$.
 
 ## Qubit states
 
-A qubit is written in some orthonormal basis $\{|a_0\rangle, |a_1\rangle\}$:
+A qubit is written in some orthonormal basis $\lbrace|a_0\rangle, |a_1\rangle\rbrace$:
 
 $$|v\rangle = c_0|a_0\rangle + c_1|a_1\rangle, \qquad c_0^2 + c_1^2 = 1$$
 

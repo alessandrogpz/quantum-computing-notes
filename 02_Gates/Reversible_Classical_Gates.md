@@ -21,7 +21,7 @@ Flip the target $y$ if the control $x$ is 1.
 
 <img src="../_assets/gate_cnot.png" width="200" alt="gate cnot">
 
-$$C(x,y) = (x,\; x \oplus y)$$
+$$C(x,y) = (x,\thickspace x \oplus y)$$
 
 ## Toffoli gate (CCNOT)
 
@@ -40,7 +40,7 @@ Flip the target $z$ if **both** controls $x, y$ are 1.
 
 <img src="../_assets/gate_toffoli.png" width="220" alt="gate toffoli">
 
-$$T(x,y,z) = \big(x,\; y,\; (x \wedge y) \oplus z\big)$$
+$$T(x,y,z) = \big(x,\thickspace y,\thickspace (x \wedge y) \oplus z\big)$$
 
 ## Fredkin gate (CSWAP)
 
@@ -59,7 +59,7 @@ Swap the targets $y, z$ if the control $x$ is 1.
 
 <img src="../_assets/gate_fredkin.png" width="220" alt="gate fredkin">
 
-$$F(x,y,z) = \big(x,\; (\neg x \wedge y) \vee (x \wedge z),\; (\neg x \wedge z) \vee (x \wedge y)\big)$$
+$$F(x,y,z) = \big(x,\thickspace (\neg x \wedge y) \vee (x \wedge z),\thickspace (\neg x \wedge z) \vee (x \wedge y)\big)$$
 
 ---
 

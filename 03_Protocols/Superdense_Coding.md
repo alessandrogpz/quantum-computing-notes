@@ -34,25 +34,25 @@ $$\tfrac{1}{\sqrt2}|00\rangle + \tfrac{1}{\sqrt2}|11\rangle$$
 - **Alice encodes** by acting on her wire only.
 - The last CNOT + $H$ is Bob reverting the Bell circuit — the involution from [Involutions](../02_Gates/Involutions.md) — which decodes.
 
-$$|00\rangle \xrightarrow{\;H\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\big) \xrightarrow{\;\text{CNOT}\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |11\rangle\big) \xrightarrow{\;I\;} \text{same}$$
+$$|00\rangle \xrightarrow{\thickspace H\thickspace} \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\big) \xrightarrow{\thickspace\text{CNOT}\thickspace} \tfrac{1}{\sqrt2}\big(|00\rangle + |11\rangle\big) \xrightarrow{\thickspace I\thickspace} \text{same}$$
 
 Alice sends her qubit to Bob, who undoes the Bell circuit:
 
-$$\xrightarrow{\;\text{CNOT}\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\big) \xrightarrow{\;H\;} |00\rangle$$
+$$\xrightarrow{\thickspace\text{CNOT}\thickspace} \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\big) \xrightarrow{\thickspace H\thickspace} |00\rangle$$
 
 ## Example — Alice wants to send 01
 
 <img src="../_assets/circuit_superdense_01.png" width="560" alt="circuit superdense 01">
 
-$$|00\rangle \xrightarrow{\;H\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\big) \xrightarrow{\;\text{CNOT}\;} \tfrac{1}{\sqrt2}\big(|00\rangle + |11\rangle\big) \xrightarrow{\;X\;} \tfrac{1}{\sqrt2}\big(|10\rangle + |01\rangle\big)$$
+$$|00\rangle \xrightarrow{\thickspace H\thickspace} \tfrac{1}{\sqrt2}\big(|00\rangle + |10\rangle\big) \xrightarrow{\thickspace\text{CNOT}\thickspace} \tfrac{1}{\sqrt2}\big(|00\rangle + |11\rangle\big) \xrightarrow{\thickspace X\thickspace} \tfrac{1}{\sqrt2}\big(|10\rangle + |01\rangle\big)$$
 
 Bob:
 
-$$\xrightarrow{\;\text{CNOT}\;} \tfrac{1}{\sqrt2}\big(|11\rangle + |01\rangle\big) \xrightarrow{\;H\;} |01\rangle$$
+$$\xrightarrow{\thickspace\text{CNOT}\thickspace} \tfrac{1}{\sqrt2}\big(|11\rangle + |01\rangle\big) \xrightarrow{\thickspace H\thickspace} |01\rangle$$
 
 ## The shape of the protocol
 
-$$\text{Entangle} \;\to\; \text{separate} \;\to\; \text{Alice applies gate} \;\to\; \text{Alice sends qubit to Bob} \;\to\; \text{Bob decodes both qubits and measures}$$
+$$\text{Entangle} \thickspace\to\thickspace \text{separate} \thickspace\to\thickspace \text{Alice applies gate} \thickspace\to\thickspace \text{Alice sends qubit to Bob} \thickspace\to\thickspace \text{Bob decodes both qubits and measures}$$
 
 The key point: Alice acting on **only her own qubit** moves the *pair* between four
 mutually distinguishable Bell states, and Bob — holding both qubits at the end —
