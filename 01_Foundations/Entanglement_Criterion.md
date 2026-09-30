@@ -2,7 +2,7 @@
 
 Given a two-qubit state written in the amplitudes of [Tensor_Products](Tensor_Products.md):
 
-$$r\thinspace|a_0\rangle|b_0\rangle + s\thinspace|a_0\rangle|b_1\rangle + t\thinspace|a_1\rangle|b_0\rangle + u\thinspace|a_1\rangle|b_1\rangle$$
+$$r |a_0\rangle|b_0\rangle + s |a_0\rangle|b_1\rangle + t |a_1\rangle|b_0\rangle + u |a_1\rangle|b_1\rangle$$
 
 ## The test
 
@@ -16,8 +16,8 @@ The two are identical. This gives the criterion:
 
 $$\boxed{
 \begin{aligned}
-ru = st &\thickspace\Rightarrow\thickspace \text{particles are NOT entangled (separable)} \cr
-ru \neq st &\thickspace\Rightarrow\thickspace \text{particles ARE entangled}
+ru = st & \Rightarrow \text{particles are NOT entangled (separable)} \cr
+ru \neq st & \Rightarrow \text{particles ARE entangled}
 \end{aligned}}$$
 
 Intuitively: if $ru = st$ the state factors back into "Alice's part times Bob's

@@ -15,7 +15,7 @@ $$|0\rangle = \begin{bmatrix}1\cr0\end{bmatrix} \qquad |1\rangle = \begin{bmatri
 - Usually the system has more than one qubit. For a 2-qubit system the basis is the
   tensor product of the standard basis with itself (see [Tensor_Products](../01_Foundations/Tensor_Products.md)):
 
-$$\big(|0\rangle|0\rangle,\thickspace |0\rangle|1\rangle,\thickspace |1\rangle|0\rangle,\thickspace |1\rangle|1\rangle\big) = \big(|00\rangle,\thickspace |01\rangle,\thickspace |10\rangle,\thickspace |11\rangle\big)$$
+$$\big(|0\rangle|0\rangle, |0\rangle|1\rangle, |1\rangle|0\rangle, |1\rangle|1\rangle\big) = \big(|00\rangle, |01\rangle, |10\rangle, |11\rangle\big)$$
 
 ## CNOT on basis states
 

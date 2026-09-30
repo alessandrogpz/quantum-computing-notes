@@ -10,7 +10,7 @@ Shor's is mostly classical number theory with one quantum subroutine:
 | :--- | :--- |
 | Pick $a$ coprime to $N$ | classical |
 | Find the period $r$ of $a^x \bmod N$ | **quantum** |
-| Get factors from $\gcd(a^{r/2} \pm 1,\thinspace N)$ | classical |
+| Get factors from $\gcd(a^{r/2} \pm 1, N)$ | classical |
 
 It is not "trying every factor in parallel". Measuring before the final step gives
 one random number; the algorithm lives in the interference that comes after.

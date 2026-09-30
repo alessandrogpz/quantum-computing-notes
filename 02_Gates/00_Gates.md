@@ -20,9 +20,9 @@ operations on qubits.
 
 ## Cheat sheet
 
-$$C(x,y) = (x,\thickspace x \oplus y)$$
-$$T(x,y,z) = \big(x,\thickspace y,\thickspace (x \wedge y) \oplus z\big)$$
-$$F(x,y,z) = \big(x,\thickspace (\neg x \wedge y) \vee (x \wedge z),\thickspace (\neg x \wedge z) \vee (x \wedge y)\big)$$
+$$C(x,y) = (x, x \oplus y)$$
+$$T(x,y,z) = \big(x, y, (x \wedge y) \oplus z\big)$$
+$$F(x,y,z) = \big(x, (\neg x \wedge y) \vee (x \wedge z), (\neg x \wedge z) \vee (x \wedge y)\big)$$
 
 $$I = \begin{bmatrix}1&0\cr0&1\end{bmatrix} \quad
 X = \begin{bmatrix}0&1\cr1&0\end{bmatrix} \quad

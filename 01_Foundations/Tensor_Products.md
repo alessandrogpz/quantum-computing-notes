@@ -16,7 +16,7 @@ $$|v\rangle \otimes |w\rangle = \big(c_0|a_0\rangle + c_1|a_1\rangle\big)\big(d_
 
 Expanding:
 
-$$= c_0d_0\thinspace|a_0\rangle|b_0\rangle + c_0d_1\thinspace|a_0\rangle|b_1\rangle + c_1d_0\thinspace|a_1\rangle|b_0\rangle + c_1d_1\thinspace|a_1\rangle|b_1\rangle$$
+$$= c_0d_0 |a_0\rangle|b_0\rangle + c_0d_1 |a_0\rangle|b_1\rangle + c_1d_0 |a_1\rangle|b_0\rangle + c_1d_1 |a_1\rangle|b_1\rangle$$
 
 ## Naming the amplitudes
 
@@ -37,7 +37,7 @@ $$\underbrace{(c_0^2 + c_1^2)}_{1}\underbrace{(d_0^2 + d_1^2)}_{1} = 1$$
 
 and expanding that product gives exactly $r^2 + s^2 + t^2 + u^2$. So:
 
-$$\boxed{\thickspace r^2 + s^2 + t^2 + u^2 = 1\thickspace}$$
+$$\boxed{r^2 + s^2 + t^2 + u^2 = 1}$$
 
 which confirms $|v\rangle \otimes |w\rangle$ is a valid two-qubit state.
 
@@ -46,13 +46,13 @@ which confirms $|v\rangle \otimes |w\rangle$ is a valid two-qubit state.
 Tensoring the standard basis with itself gives the four basis vectors of a
 two-qubit system:
 
-$$\left(\begin{bmatrix}1\cr0\end{bmatrix} \otimes \begin{bmatrix}1\cr0\end{bmatrix},\thickspace
-\begin{bmatrix}1\cr0\end{bmatrix} \otimes \begin{bmatrix}0\cr1\end{bmatrix},\thickspace
-\begin{bmatrix}0\cr1\end{bmatrix} \otimes \begin{bmatrix}1\cr0\end{bmatrix},\thickspace
+$$\left(\begin{bmatrix}1\cr0\end{bmatrix} \otimes \begin{bmatrix}1\cr0\end{bmatrix}, 
+\begin{bmatrix}1\cr0\end{bmatrix} \otimes \begin{bmatrix}0\cr1\end{bmatrix}, 
+\begin{bmatrix}0\cr1\end{bmatrix} \otimes \begin{bmatrix}1\cr0\end{bmatrix}, 
 \begin{bmatrix}0\cr1\end{bmatrix} \otimes \begin{bmatrix}0\cr1\end{bmatrix}\right)$$
 
-$$= \big(|0\rangle|0\rangle,\thickspace |0\rangle|1\rangle,\thickspace |1\rangle|0\rangle,\thickspace |1\rangle|1\rangle\big)
-= \big(|00\rangle,\thickspace |01\rangle,\thickspace |10\rangle,\thickspace |11\rangle\big)$$
+$$= \big(|0\rangle|0\rangle, |0\rangle|1\rangle, |1\rangle|0\rangle, |1\rangle|1\rangle\big)
+= \big(|00\rangle, |01\rangle, |10\rangle, |11\rangle\big)$$
 
 The shorthand $|00\rangle$ means $|0\rangle \otimes |0\rangle$.
 
