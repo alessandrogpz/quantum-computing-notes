@@ -1,8 +1,14 @@
 # Python
+*.whl
+*.tar.gz
 __pycache__/
 *.py[cod]
 .venv/
 .ipynb_checkpoints/
+
+# Node (katex, used to check the maths renders)
+node_modules/
+package-lock.json
 
 # OS generated files
 .DS_Store
