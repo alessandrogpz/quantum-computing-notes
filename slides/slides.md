@@ -385,12 +385,31 @@ with qc.if_test((c[0], 1)): qc.z(b)
 
 Not encryption. It produces a shared random key **and tells you if anyone looked**.
 
-Two **conjugate** bases: $Z = \lbrace|0\rangle, |1\rangle\rbrace$ and $X = \lbrace|+\rangle, |-\rangle\rbrace$. Measuring in
-the wrong one gives a **coin flip** and destroys the state.
+![width:470px](images/circuit_bb84_clean.png)
 
-![width:520px](images/circuit_bb84_clean.png)
+<div class="cols">
 
-<span class="small">A clean round: Alice sends $|-\rangle$, Bob happens to pick $X$ too, and reads her bit with certainty. One qubit per round — no entanglement anywhere.</span>
+<div>
+
+**One qubit, changing hands.** `channel` is Alice's before the barrier, Bob's after.
+
+- `X` — Alice's **bit** (no `X` = 0)
+- first `H` — Alice's **basis** (no `H` = $Z$)
+- second `H` — **Bob's** basis, picked blind
+
+</div>
+
+<div>
+
+$Z = \lbrace|0\rangle, |1\rangle\rbrace$ and $X = \lbrace|+\rangle, |-\rangle\rbrace$ are **conjugate**.
+
+**Bases match** → the two $H$s cancel, $H^2 = I$ → Bob reads her bit exactly.
+
+**Bases differ** → one lone $H$ → a coin flip, and the round is thrown away.
+
+</div>
+
+</div>
 
 ---
 
