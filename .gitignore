@@ -6,6 +6,9 @@ __pycache__/
 .venv/
 .ipynb_checkpoints/
 
+# Marp intermediate; deck.pdf is the one that matters
+slides/slides.html
+
 # Node (katex, used to check the maths renders)
 node_modules/
 package-lock.json
