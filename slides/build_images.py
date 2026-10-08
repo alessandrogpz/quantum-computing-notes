@@ -100,6 +100,11 @@ save_circuit(g, "gates_single")
 bell = QuantumCircuit(2); bell.h(0); bell.cx(0, 1)
 save_circuit(bell, "circuit_bell")
 
+# the Bell circuit run forwards then backwards: its own inverse
+inv = QuantumCircuit(2)
+inv.h(0); inv.cx(0, 1); inv.barrier(); inv.cx(0, 1); inv.h(0)
+save_circuit(inv, "circuit_bell_involution")
+
 # --- Bell measurement histogram ---------------------------------------------
 m = QuantumCircuit(2); m.h(0); m.cx(0, 1); m.measure_all()
 counts = StatevectorSampler().run([m], shots=1024).result()[0].data.meas.get_counts()

@@ -1,7 +1,7 @@
 # Slides
 
 A ~15 minute talk covering the fundamentals through to key distribution.
-19 slides, written in [Marp](https://marp.app) markdown.
+21 slides, written in [Marp](https://marp.app) markdown.
 
 - `slides.md` — the deck
 - `images/` — generated, do not edit by hand
@@ -29,13 +29,14 @@ circuit on a slide cannot drift from the code that runs it.
 | 2–3 | Kets, bras, normalisation, orthonormal basis | the 2D picture |
 | 4–5 | Tensor product, the $ru$ vs $st$ test | |
 | 6–7 | Worked examples: separable, then entangled | the core of the talk |
-| 8–9 | Single-qubit gates, and what each one does | |
-| 10–11 | CNOT, and a measured Bell pair | |
-| 12–13 | Superdense coding | |
-| 14–15 | Teleportation | |
-| 16–17 | BB84 | |
-| 18 | E91 | |
-| 19 | Recap | |
+| 8–10 | $I$ and $Z$, $X$ and $Y$, Hadamard | follows `02_Gates/Single_Qubit_Gates.md` |
+| 11 | Involutions | follows `02_Gates/Involutions.md` |
+| 12–13 | CNOT, and a measured Bell pair | |
+| 14–15 | Superdense coding | |
+| 16–17 | Teleportation | |
+| 18–19 | BB84 | |
+| 20 | E91 | |
+| 21 | Recap | |
 
 Slides 6 and 7 are the ones worth slowing down on — everything after them is an
 application of the same test.

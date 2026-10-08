@@ -13,6 +13,9 @@ style: |
   .small { font-size: 0.82em; }
   section.gates .cols { grid-template-columns: 1.05fr 1fr; align-items: start; }
   section.gates table { width: 100%; font-size: 1.12em; }
+  section.involution .cols { grid-template-columns: 1fr 1fr; align-items: start; }
+  section.involution table { width: 100%; font-size: 0.86em; }
+  section.involution td, section.involution th { padding: 0.18em 0.5em; }
 ---
 
 <!-- _class: lead -->
@@ -127,54 +130,84 @@ her result decides Bob's. Get $|a_1\rangle$ and Bob is $|b_0\rangle$ with certai
 
 ---
 
-## Single-qubit gates
+## $I$ and $Z$ — leave the magnitudes alone
 
-$$I = \begin{bmatrix}1&0\cr0&1\end{bmatrix} \quad X = \begin{bmatrix}0&1\cr1&0\end{bmatrix} \quad Y = \begin{bmatrix}0&1\cr-1&0\end{bmatrix} \quad Z = \begin{bmatrix}1&0\cr0&-1\end{bmatrix} \quad H = \tfrac{1}{\sqrt2}\begin{bmatrix}1&1\cr1&-1\end{bmatrix}$$
+All of these act on $a_0|0\rangle + a_1|1\rangle$ in the standard basis.
 
-<div class="cols">
+$I$ is the **identity** — it does nothing:
 
-```python
-qc.h(0)   # superposition
-qc.x(0)   # NOT: |0> <-> |1>
-qc.z(0)   # flips the sign of |1>
-qc.y(0)   # both at once
-```
+$$I = \begin{bmatrix}1 & 0\cr 0 & 1\end{bmatrix} \qquad I\big(a_0|0\rangle + a_1|1\rangle\big) = a_0|0\rangle + a_1|1\rangle$$
 
-![width:300px](images/gates_single.png)
+$Z$ leaves both **magnitudes** unchanged but flips the sign of $a_1$ — the
+**relative phase**:
 
-</div>
+$$Z = \begin{bmatrix}1 & 0\cr 0 & -1\end{bmatrix} \qquad Z\big(a_0|0\rangle + a_1|1\rangle\big) = a_0|0\rangle - a_1|1\rangle$$
 
-$X$ is NOT. $Z$ changes the **relative phase** without changing any probability.
-$H$ puts a basis state into superposition: $H|0\rangle = \tfrac{1}{\sqrt2}(|0\rangle + |1\rangle)$.
-
-<span class="small">$Y$ here is the real-valued version; the true Pauli $Y$ carries a factor $-i$, and only that one squares to $I$.</span>
+Probabilities are unaffected, since $|-a_1|^2 = |a_1|^2$. The phase only becomes
+visible once the qubit **interferes** with another — for instance after a Hadamard.
 
 ---
 
-<!-- _class: gates -->
+## $X$ and $Y$ — the two NOTs
 
-## What each gate actually does
+Both exchange $|0\rangle$ and $|1\rangle$.
+
+$$X = \begin{bmatrix}0 & 1\cr 1 & 0\end{bmatrix} \qquad\qquad Y = \begin{bmatrix}0 & 1\cr -1 & 0\end{bmatrix}$$
+
+$$X\big(a_0|0\rangle + a_1|1\rangle\big) = a_1|0\rangle + a_0|1\rangle \qquad Y\big(a_0|0\rangle + a_1|1\rangle\big) = a_1|0\rangle - a_0|1\rangle$$
+
+So $X$ is a pure swap; $Y$ swaps **and** changes the relative phase.
+
+<span class="small">The Pauli $Y$ is usually $-i$ times the matrix above, giving $\begin{bmatrix}0 & -i\cr i & 0\end{bmatrix}$. The real version is used here because these slides avoid complex numbers — but only the complex one squares to $I$. Qiskit's `qc.y()` applies the complex one.</span>
+
+---
+
+## Hadamard — into superposition
+
+$$H = \begin{bmatrix} \tfrac{1}{\sqrt2} & \tfrac{1}{\sqrt2} \cr \tfrac{1}{\sqrt2} & -\tfrac{1}{\sqrt2} \end{bmatrix} = \tfrac{1}{\sqrt2}\begin{bmatrix}1 & 1\cr 1 & -1\end{bmatrix} \qquad \begin{aligned} H|0\rangle &= \tfrac{1}{\sqrt2}\big(|0\rangle + |1\rangle\big) \cr H|1\rangle &= \tfrac{1}{\sqrt2}\big(|0\rangle - |1\rangle\big) \end{aligned}$$
 
 <div class="cols">
 
+![width:480px](images/gates_action.png)
+
 <div>
 
-Acting on the two basis states:
+In a diagram, a one-qubit gate is a square with its letter in it:
 
-| | $\vert 0\rangle$ | $\vert 1\rangle$ | |
-| :-: | :-: | :-: | :--- |
-| $I$ | $\vert 0\rangle$ | $\vert 1\rangle$ | nothing |
-| $X$ | $\vert 1\rangle$ | $\vert 0\rangle$ | NOT — swaps them |
-| $Z$ | $\vert 0\rangle$ | $-\vert 1\rangle$ | flips the **sign** |
-| $H$ | $\vert +\rangle$ | $\vert -\rangle$ | superposition |
+![width:290px](images/gates_single.png)
 
 </div>
 
+</div>
+
+---
+
+<!-- _class: involution -->
+
+## Involutions — gates that undo themselves
+
+Applying one twice returns the input: $\boxed{U^2 = I}$
+
+<div class="cols">
+
+| Gate | Qubits | What it does |
+| :--- | :-: | :--- |
+| $X$ | 1 | swaps $\vert 0\rangle \leftrightarrow \vert 1\rangle$ |
+| $Y$ | 1 | swaps, with phases |
+| $Z$ | 1 | sign flip on $\vert 1\rangle$ |
+| $H$ | 1 | basis change |
+| CNOT | 2 | flip if control is 1 |
+| SWAP | 2 | exchange the two |
+| Toffoli | 3 | flip if both controls 1 |
+| Fredkin | 3 | swap if control is 1 |
+
 <div>
 
-![width:560px](images/gates_action.png)
+![width:450px](images/circuit_bell_involution.png)
 
-<span class="small">$Z$ alone is invisible to measurement — the probabilities are unchanged. But $HZH|0\rangle = |1\rangle$: a Hadamard turns the hidden sign into a visible bit.</span>
+At the barrier the state is $\tfrac{1}{\sqrt2}|00\rangle + \tfrac{1}{\sqrt2}|11\rangle$. Run the same two gates again and you are back at $|00\rangle$.
+
+<span class="small">That "un-preparing" step is exactly what Bob does in superdense coding, and Alice in teleportation.</span>
 
 </div>
 
