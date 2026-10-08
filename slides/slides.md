@@ -386,8 +386,9 @@ with qc.if_test((c[0], 1)): qc.z(b)
 ## BB84 — detecting an eavesdropper
 
 Not encryption. It produces a shared random key **and tells you if anyone looked**.
+$Z = \lbrace|0\rangle, |1\rangle\rbrace$ and $X = \lbrace|+\rangle, |-\rangle\rbrace$ are **conjugate** — certain in one, a coin flip in the other.
 
-![width:470px](images/circuit_bb84_clean.png)
+![width:430px](images/circuit_bb84_clean.png)
 
 <div class="cols">
 
@@ -395,25 +396,26 @@ Not encryption. It produces a shared random key **and tells you if anyone looked
 
 **One qubit, changing hands.** `channel` is Alice's before the barrier, Bob's after.
 
-- `X` — Alice's **bit**, present = 1
-- first `H` — Alice's **basis**, present = $X$
+- `X` — Alice's **bit**: present 1, absent 0
+- first `H` — her **basis**: present $X$, absent $Z$
 - second `H` — **Bob's** basis, picked blind
-
-An absent gate means the other value — bit 0, or basis $Z$.
 
 </div>
 
 <div>
 
-$Z = \lbrace|0\rangle, |1\rangle\rbrace$ and $X = \lbrace|+\rangle, |-\rangle\rbrace$ are **conjugate**.
+**The order is the security:**
 
-**Bases match** → the two $H$s cancel, $H^2 = I$ → Bob reads her bit exactly.
-
-**Bases differ** → one lone $H$ → a coin flip, and the round is thrown away.
+1. Alice sends the qubit
+2. Bob measures **immediately**, guessing a basis
+3. *Then* they announce bases — never bits
+4. Discard the mismatches
 
 </div>
 
 </div>
+
+<span class="small">Bases match → the two $H$s cancel, $H^2 = I$ → Bob reads her bit exactly. Bases differ → one lone $H$ → a coin flip.</span>
 
 ---
 
