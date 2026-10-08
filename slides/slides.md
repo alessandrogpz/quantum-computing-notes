@@ -314,9 +314,11 @@ Send **2 classical bits** by physically transmitting **1 qubit**.
 Alice applies one gate to **her qubit only**, sends it to Bob, and he — now holding
 both — undoes the Bell circuit.
 
-| bits | 00 | 01 | 10 | 11 |
+| Bob finally reads | 00 | 01 | 10 | 11 |
 |:--|:-:|:-:|:-:|:-:|
-| Alice applies | $I$ | $X$ | $Z$ | $ZX$ |
+| so Alice applies | $I$ | $X$ | $Z$ | $ZX$ |
+
+<span class="small">The top row is the **message Bob reads after decoding** — not the state in flight.</span>
 
 ---
 
@@ -330,7 +332,7 @@ $$\xrightarrow{X} \tfrac{1}{\sqrt2}(|10\rangle + |01\rangle)$$
 
 Bob reverses the Bell circuit:
 
-$$\xrightarrow{CNOT} \tfrac{1}{\sqrt2}(|11\rangle + |01\rangle) \xrightarrow{H} |01\rangle$$
+$$\xrightarrow{CNOT} \tfrac{1}{\sqrt2}(|11\rangle + |01\rangle) \xrightarrow{H} |01\rangle \quad \textsf{— the two bits he reads}$$
 
 ```python
 qc.h(0); qc.cx(0, 1)      # Bell pair, shared in advance
