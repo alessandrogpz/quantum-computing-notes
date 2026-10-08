@@ -56,18 +56,6 @@ $$\langle 0|0\rangle = 1 \qquad \langle 1|1\rangle = 1 \qquad \langle 0|1\rangle
 
 ---
 
-## Rotations move you around the circle
-
-$R_y(\theta)$ rotates by $\theta/2$. Angles are in **radians**.
-
-$$R_y(\theta)|0\rangle = \cos\tfrac{\theta}{2}|0\rangle + \sin\tfrac{\theta}{2}|1\rangle$$
-
-![width:1020px](images/circle_rotations.png)
-
-<span class="small">`qc.ry(math.pi/3, 0)` — note $R_y(\pi/2)$ lands on $|+\rangle$, the same place a Hadamard does.</span>
-
----
-
 ## Two qubits: the tensor product
 
 Alice has $|v\rangle = c_0|a_0\rangle + c_1|a_1\rangle$, Bob has $|w\rangle = d_0|b_0\rangle + d_1|b_1\rangle$.
@@ -158,6 +146,21 @@ $X$ is NOT. $Z$ changes the **relative phase** without changing any probability.
 $H$ puts a basis state into superposition: $H|0\rangle = \tfrac{1}{\sqrt2}(|0\rangle + |1\rangle)$.
 
 <span class="small">$Y$ here is the real-valued version; the true Pauli $Y$ carries a factor $-i$, and only that one squares to $I$.</span>
+
+---
+
+## What each gate actually does
+
+| | on $\vert 0\rangle$ | on $\vert 1\rangle$ | in words |
+| :-: | :-: | :-: | :--- |
+| $I$ | $\vert 0\rangle$ | $\vert 1\rangle$ | nothing |
+| $X$ | $\vert 1\rangle$ | $\vert 0\rangle$ | NOT — swaps the two |
+| $Z$ | $\vert 0\rangle$ | $-\vert 1\rangle$ | flips the **sign** of $\vert 1\rangle$ only |
+| $H$ | $\vert +\rangle$ | $\vert -\rangle$ | into superposition |
+
+![width:470px](images/gates_action.png)
+
+<span class="small">$Z$ alone is invisible to measurement — but $HZH|0\rangle = |1\rangle$.</span>
 
 ---
 

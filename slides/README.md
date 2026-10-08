@@ -26,15 +26,16 @@ circuit on a slide cannot drift from the code that runs it.
 | # | Slide | |
 | :-: | :--- | :--- |
 | 1 | Title | |
-| 2–4 | Kets, bras, normalisation, rotations | the 2D picture |
-| 5–6 | Tensor product, the $ru$ vs $st$ test | |
-| 7–8 | Worked examples: separable, then entangled | the core of the talk |
-| 9–11 | Gates, CNOT, measured Bell pair | |
+| 2–3 | Kets, bras, normalisation, orthonormal basis | the 2D picture |
+| 4–5 | Tensor product, the $ru$ vs $st$ test | |
+| 6–7 | Worked examples: separable, then entangled | the core of the talk |
+| 8–9 | Single-qubit gates, and what each one does | |
+| 10–11 | CNOT, and a measured Bell pair | |
 | 12–13 | Superdense coding | |
 | 14–15 | Teleportation | |
 | 16–17 | BB84 | |
 | 18 | E91 | |
 | 19 | Recap | |
 
-Slides 7 and 8 are the ones worth slowing down on — everything after them is an
+Slides 6 and 7 are the ones worth slowing down on — everything after them is an
 application of the same test.

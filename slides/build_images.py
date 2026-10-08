@@ -69,18 +69,29 @@ arrow(ax, -math.pi / 4, r"$|-\rangle$", ACCENT)
 ax.set_title("Real qubit states live on a circle", fontsize=13, color=INK, pad=2)
 save_fig(fig, "circle_basis")
 
-# --- Ry rotations by concrete angles ----------------------------------------
-fig, axes = plt.subplots(1, 4, figsize=(13.5, 3.6))
-for ax, (theta, name) in zip(axes, [(0, "0"), (math.pi / 3, r"\pi/3"),
-                                    (math.pi / 2, r"\pi/2"), (math.pi, r"\pi")]):
-    unit_circle(ax)
-    arrow(ax, 0, "", "#cfcfcf", lw=1.6)
-    arrow(ax, theta / 2, "", ACCENT)
-    a0, a1 = math.cos(theta / 2), math.sin(theta / 2)
-    ax.set_title(rf"$R_y({name})$", fontsize=14, color=INK, pad=4)
-    ax.text(0, -1.28, rf"$P(0)={a0**2:.2f}\quad P(1)={a1**2:.2f}$",
-            ha="center", fontsize=11, color=INK)
-save_fig(fig, "circle_rotations")
+# --- what the gates do, on the circle ---
+fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.0))
+
+ax = axes[0]
+unit_circle(ax)
+arrow(ax, 0, r"$|0\rangle$", "#b0b0b0", lw=1.8)
+arrow(ax, math.pi / 2, r"$|1\rangle$", "#b0b0b0", lw=1.8)
+arrow(ax, -math.pi / 2, r"$-|1\rangle$", ACCENT)
+ax.annotate("", xy=(0.08, -0.92), xytext=(0.08, 0.92),
+            arrowprops=dict(arrowstyle="-|>", color=ACCENT, lw=1.6,
+                            connectionstyle="arc3,rad=-0.45", mutation_scale=14))
+ax.set_title(r"$Z$ leaves $|0\rangle$, flips the sign of $|1\rangle$",
+             fontsize=12, color=INK, pad=2)
+
+ax = axes[1]
+unit_circle(ax)
+arrow(ax, 0, r"$|0\rangle$", "#b0b0b0", lw=1.8)
+arrow(ax, math.pi / 2, r"$|1\rangle$", "#b0b0b0", lw=1.8)
+arrow(ax, math.pi / 4, r"$|+\rangle$", ACCENT)
+arrow(ax, -math.pi / 4, r"$|-\rangle$", ACCENT)
+ax.set_title(r"$H$ sends $|0\rangle \to |+\rangle$ and $|1\rangle \to |-\rangle$",
+             fontsize=12, color=INK, pad=2)
+save_fig(fig, "gates_action")
 
 # --- gates -------------------------------------------------------------------
 g = QuantumCircuit(1); g.h(0); g.x(0); g.y(0); g.z(0)
