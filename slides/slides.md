@@ -130,6 +130,18 @@ her result decides Bob's. Get $|a_1\rangle$ and Bob is $|b_0\rangle$ with certai
 
 ---
 
+<!-- _class: lead -->
+
+# Gates
+
+So far: how to **describe** a two-qubit state, and test whether it is entangled.
+
+Now: how to **change** one — and how entanglement actually gets made.
+
+![width:330px](images/gates_single.png)
+
+---
+
 ## $I$ and $Z$ — leave the magnitudes alone
 
 All of these act on $a_0|0\rangle + a_1|1\rangle$ in the standard basis.
