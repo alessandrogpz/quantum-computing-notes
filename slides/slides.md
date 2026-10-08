@@ -11,6 +11,8 @@ style: |
   code { font-size: 0.85em; }
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; align-items: center; }
   .small { font-size: 0.82em; }
+  section.gates .cols { grid-template-columns: 1.05fr 1fr; align-items: start; }
+  section.gates table { width: 100%; font-size: 1.12em; }
 ---
 
 <!-- _class: lead -->
@@ -149,18 +151,34 @@ $H$ puts a basis state into superposition: $H|0\rangle = \tfrac{1}{\sqrt2}(|0\ra
 
 ---
 
+<!-- _class: gates -->
+
 ## What each gate actually does
 
-| | on $\vert 0\rangle$ | on $\vert 1\rangle$ | in words |
+<div class="cols">
+
+<div>
+
+Acting on the two basis states:
+
+| | $\vert 0\rangle$ | $\vert 1\rangle$ | |
 | :-: | :-: | :-: | :--- |
 | $I$ | $\vert 0\rangle$ | $\vert 1\rangle$ | nothing |
-| $X$ | $\vert 1\rangle$ | $\vert 0\rangle$ | NOT — swaps the two |
-| $Z$ | $\vert 0\rangle$ | $-\vert 1\rangle$ | flips the **sign** of $\vert 1\rangle$ only |
-| $H$ | $\vert +\rangle$ | $\vert -\rangle$ | into superposition |
+| $X$ | $\vert 1\rangle$ | $\vert 0\rangle$ | NOT — swaps them |
+| $Z$ | $\vert 0\rangle$ | $-\vert 1\rangle$ | flips the **sign** |
+| $H$ | $\vert +\rangle$ | $\vert -\rangle$ | superposition |
 
-![width:470px](images/gates_action.png)
+</div>
 
-<span class="small">$Z$ alone is invisible to measurement — but $HZH|0\rangle = |1\rangle$.</span>
+<div>
+
+![width:560px](images/gates_action.png)
+
+<span class="small">$Z$ alone is invisible to measurement — the probabilities are unchanged. But $HZH|0\rangle = |1\rangle$: a Hadamard turns the hidden sign into a visible bit.</span>
+
+</div>
+
+</div>
 
 ---
 
