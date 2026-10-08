@@ -19,7 +19,6 @@ hardware with `--ibm`.
 | **[02_Gates](02_Gates/00_Gates.md)** | Reversible classical gates, the move to qubits, single-qubit gates, involutions |
 | **[03_Protocols](03_Protocols/00_Protocols.md)** | Superdense coding, teleportation, and the BB84 and E91 key-distribution protocols |
 | **[04_Algorithms](04_Algorithms/00_Algorithms.md)** | Shor's algorithm factoring 15 |
-| **[slides](slides/README.md)** | A 15 minute talk covering the whole repo, as Marp markdown |
 
 Each folder has a `00_` index note with the reading order.
 

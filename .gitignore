@@ -10,6 +10,7 @@ __pycache__/
 
 # Marp intermediate; deck.pdf is the one that matters
 slides/slides.html
+slides/deck-editable.pptx
 
 # Node (katex, used to check the maths renders)
 node_modules/

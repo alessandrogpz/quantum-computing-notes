@@ -90,7 +90,7 @@ They must be equal. So:
 $$\boxed{\begin{aligned} ru = st &\Rightarrow \textbf{separable} \cr ru \neq st &\Rightarrow \textbf{entangled}\end{aligned}}$$
 
 Separable means each qubit has a state of its own. Entangled means only the
-**pair** has a state.
+**pair** has a state. Two worked examples follow — one of each.
 
 <span class="small">Equivalently: $ru - st$ is the determinant of $\begin{bmatrix}r & s\cr t & u\end{bmatrix}$, so separable = determinant zero.</span>
 
@@ -111,6 +111,8 @@ $$|a_0\rangle\left(\tfrac{1}{2\sqrt2}|b_0\rangle + \tfrac{\sqrt3}{2\sqrt2}|b_1\r
 **Normalise each bracket** — both have norm $\sqrt{\tfrac18 + \tfrac38} = \tfrac{1}{\sqrt2}$ — and Bob's part is a **common factor**:
 
 $$= \left(\tfrac{1}{\sqrt2}|a_0\rangle + \tfrac{1}{\sqrt2}|a_1\rangle\right)\left(\tfrac12|b_0\rangle + \tfrac{\sqrt3}{2}|b_1\rangle\right)$$
+
+Each qubit has a state of its own. Now the same four steps on one that fails.
 
 ---
 
@@ -306,6 +308,21 @@ This **Bell pair** is the resource every protocol below is built on.
 
 ---
 
+<!-- _class: lead -->
+
+# Protocols
+
+We can now **make** a Bell pair. What is it good for?
+
+Two protocols that trade one resource against the other:
+
+**Superdense coding** — 2 classical bits for 1 qubit
+**Teleportation** — 1 qubit for 2 classical bits
+
+![width:300px](images/circuit_bell.png)
+
+---
+
 ## Superdense coding
 
 Send **2 classical bits** by physically transmitting **1 qubit**.
@@ -380,6 +397,19 @@ with qc.if_test((c[0], 1)): qc.z(b)
 ```
 
 <span class="small">Verified in `teleportation.py`: $|0\rangle$, $|1\rangle$, $|+\rangle$ and $R_y(\pi/3)|0\rangle$ all arrive in 100% of shots.</span>
+
+---
+
+<!-- _class: lead -->
+
+# Key distribution
+
+Those two moved information between people who **trust each other**.
+
+Now: two protocols where somebody is **listening** — and the physics says so.
+
+**BB84** — two conjugate bases, no entanglement at all
+**E91** — entanglement, and a Bell inequality
 
 ---
 
