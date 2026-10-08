@@ -11,7 +11,7 @@ For the initial step, 2 particles need to be in an entangled state:
 
 $$\tfrac{1}{\sqrt2}|00\rangle + \tfrac{1}{\sqrt2}|11\rangle$$
 
-- Alice and Bob each have one particle.
+- **Alice owns qubit 0, Bob owns qubit 1** — one each, in different places.
 - Alice wants to send two classical bits of information (00, 01, 10 or 11).
 - Alice starts with $|00\rangle$.
 - Depending on which 2 classical bits Alice wants to send, she will act on **her**
@@ -53,6 +53,11 @@ $$\xrightarrow{\text{CNOT}} \tfrac{1}{\sqrt2}\big(|11\rangle + |01\rangle\big) \
 ## The shape of the protocol
 
 $$\text{Entangle} \to \text{separate} \to \text{Alice applies gate} \to \text{Alice sends qubit to Bob} \to \text{Bob decodes both qubits and measures}$$
+
+A circuit diagram has no symbol for a qubit travelling across a room, so the
+hand-over is the **second barrier**. Gates before it act on Alice's qubit; gates
+after it are Bob's, and he may touch both wires because by then he holds both
+qubits.
 
 The key point: Alice acting on **only her own qubit** moves the *pair* between four
 mutually distinguishable Bell states, and Bob — holding both qubits at the end —

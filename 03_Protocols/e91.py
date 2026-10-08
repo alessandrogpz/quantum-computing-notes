@@ -111,7 +111,12 @@ def emit_round(qc: QuantumCircuit, config: tuple, alice, bob, probe=None) -> Non
 
 
 def round_circuit(config: tuple) -> QuantumCircuit:
-    """One round as a standalone circuit: the pair, plus Eve's probe if she is on."""
+    """One round as a standalone circuit: the pair, plus Eve's probe if she is on.
+
+    `pair[0]` is Alice's qubit and `pair[1]` is Bob's -- the source in the middle
+    emits them and sends one to each, so neither party prepares anything. `probe`
+    is Eve's. The classical registers carry the owner's name.
+    """
     eve = config[2] is not None
     pair = QuantumRegister(2, "pair")
     probe = QuantumRegister(1, "probe") if eve else None

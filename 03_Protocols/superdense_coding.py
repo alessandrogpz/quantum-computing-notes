@@ -3,8 +3,15 @@
     python superdense_coding.py            # local simulator
     python superdense_coding.py --ibm      # real IBM hardware
 
-Alice and Bob share the entangled pair (|00> + |11>)/sqrt(2). Alice acts on her
-qubit alone with one of four gates, sends it to Bob, and Bob recovers both bits.
+Alice owns qubit 0 and Bob owns qubit 1. They share the entangled pair
+(|00> + |11>)/sqrt(2), one qubit each.
+
+Alice acts on HER qubit alone with one of four gates, then physically sends it to
+Bob. He now holds both, undoes the Bell circuit, and reads two bits out.
+
+The diagram cannot draw a qubit travelling across a room, so the hand-over is the
+second barrier: gates before it are Alice's, gates after it are Bob's -- and he is
+entitled to touch both wires because by then he has both qubits.
 """
 
 import argparse
@@ -14,28 +21,31 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "_scripts"))
 from backend import run  # noqa: E402
 
-from qiskit import QuantumCircuit  # noqa: E402
+from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister  # noqa: E402
 
 # Which gate Alice applies for each pair of bits she wants to send.
 ENCODING = {"00": "I", "01": "X", "10": "Z", "11": "ZX"}
 
 
 def circuit(bits: str) -> QuantumCircuit:
-    qc = QuantumCircuit(2, 2)
+    alice = QuantumRegister(1, "alice")   # Alice's qubit -- the one she sends
+    bob = QuantumRegister(1, "bob")       # Bob's qubit -- stays with him throughout
+    c = ClassicalRegister(2, "c")
+    qc = QuantumCircuit(alice, bob, c)
 
-    qc.h(0)                    # prepare the shared Bell pair
-    qc.cx(0, 1)
-    qc.barrier()
+    qc.h(alice)                # prepare the shared Bell pair, one qubit each
+    qc.cx(alice, bob)
+    qc.barrier(label="shared")
 
-    if bits in ("01", "11"):   # Alice encodes on her qubit only
-        qc.x(0)
+    if bits in ("01", "11"):   # Alice encodes on HER qubit only
+        qc.x(alice)
     if bits in ("10", "11"):
-        qc.z(0)
-    qc.barrier()
+        qc.z(alice)
+    qc.barrier(label="Alice sends")   # her qubit travels to Bob here
 
-    qc.cx(0, 1)                # Bob undoes the Bell circuit and measures
-    qc.h(0)
-    qc.measure([0, 1], [0, 1])
+    qc.cx(alice, bob)          # Bob now holds both and undoes the Bell circuit
+    qc.h(alice)
+    qc.measure([alice[0], bob[0]], [0, 1])
     return qc
 
 

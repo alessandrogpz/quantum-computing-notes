@@ -99,7 +99,13 @@ def emit_round(qc: QuantumCircuit, config: tuple, channel, probe=None) -> None:
 
 
 def round_circuit(config: tuple) -> QuantumCircuit:
-    """One round as a standalone circuit: one qubit, plus Eve's probe if she is on."""
+    """One round as a standalone circuit: one qubit, plus Eve's probe if she is on.
+
+    There is only one qubit, and it travels. `channel` is Alice's preparation at
+    the left of the barrier and Bob's measurement at the right -- the same qubit,
+    in two different hands. `probe` is Eve's, kept by her. The classical registers
+    are named for whoever reads them.
+    """
     eve = config[2] is not None
     channel = QuantumRegister(1, "channel")
     probe = QuantumRegister(1, "probe") if eve else None

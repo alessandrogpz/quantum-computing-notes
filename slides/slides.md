@@ -310,8 +310,9 @@ Send **2 classical bits** by physically transmitting **1 qubit**.
 
 ![width:560px](images/circuit_superdense_01.png)
 
-Alice and Bob share $\tfrac{1}{\sqrt2}(|00\rangle + |11\rangle)$. Alice applies one gate to
-**her qubit only**, sends it, and Bob undoes the Bell circuit.
+**Alice owns q0, Bob owns q1** — they share $\tfrac{1}{\sqrt2}(|00\rangle + |11\rangle)$, one each.
+Alice applies one gate to **her qubit only**, sends it to Bob, and he — now holding
+both — undoes the Bell circuit.
 
 | bits | 00 | 01 | 10 | 11 |
 |:--|:-:|:-:|:-:|:-:|
@@ -345,10 +346,11 @@ qc.cx(0, 1); qc.h(0)      # Bob decodes
 
 Move **1 qubit's state** using **2 classical bits**. The exact opposite trade.
 
-![width:850px](images/circuit_teleportation.png)
+![width:790px](images/circuit_teleportation.png)
 
-Alice entangles her unknown state with her half of the pair, measures both, and
-sends the two bits. Bob applies a correction.
+**Alice owns `psi` and `alice`; Bob owns `bob`.** She entangles her state with her
+half of the pair, measures both of hers, and sends two classical bits — nothing
+quantum crosses. Bob corrects his qubit.
 
 | Bob receives | 00 | 01 | 10 | 11 |
 |:--|:-:|:-:|:-:|:-:|

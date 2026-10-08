@@ -13,7 +13,7 @@ For the initial step, 2 particles need to be in an entangled state:
 
 $$\tfrac{1}{\sqrt2}|00\rangle + \tfrac{1}{\sqrt2}|11\rangle$$
 
-- Alice and Bob are far apart, each one with a shared-state particle.
+- **Alice owns `psi` and `alice`; Bob owns `bob`** — and they are far apart.
 - Alice has **another** particle in the state $a|0\rangle + b|1\rangle$.
 - Alice wants to change Bob's particle to be in the state $a|0\rangle + b|1\rangle$.
 - Alice runs CNOT then $H$ on her two qubits.

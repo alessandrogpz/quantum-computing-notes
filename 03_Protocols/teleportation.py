@@ -3,9 +3,15 @@
     python teleportation.py            # local simulator
     python teleportation.py --ibm      # real IBM hardware
 
+The three wires are named for who owns them: `psi` and `alice` are Alice's, `bob`
+is Bob's, and they are in different places.
+
 Alice has a qubit in the state Ry(theta)|0>. She entangles it with her half of a
-shared Bell pair, measures both, and sends the two bits to Bob, who applies a
-correction. To check it worked we rotate Bob's qubit back by -theta: if the state
+shared Bell pair, measures BOTH of her qubits, and sends the two resulting
+classical bits to Bob, who applies a correction to his.
+
+Nothing quantum crosses between them -- only the two bits. That is the opposite
+trade from superdense coding, where one qubit travels and no bits do. To check it worked we rotate Bob's qubit back by -theta: if the state
 really arrived, he measures 0 every time.
 """
 
