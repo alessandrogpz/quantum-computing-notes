@@ -393,9 +393,11 @@ Not encryption. It produces a shared random key **and tells you if anyone looked
 
 **One qubit, changing hands.** `channel` is Alice's before the barrier, Bob's after.
 
-- `X` — Alice's **bit** (no `X` = 0)
-- first `H` — Alice's **basis** (no `H` = $Z$)
+- `X` — Alice's **bit**, present = 1
+- first `H` — Alice's **basis**, present = $X$
 - second `H` — **Bob's** basis, picked blind
+
+An absent gate means the other value — bit 0, or basis $Z$.
 
 </div>
 
