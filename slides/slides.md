@@ -450,10 +450,11 @@ Alice keeps `1 1 0 0 0`, Bob keeps `1 1 0 0 0`: a secret neither of them sent.
 A real run of `bb84.py --rounds 10`:
 
 ```
-transmitted        10
-bases agreed        7     <- sifting: ~50% on average
-sacrificed to test  4     <- announced openly, so spent either way
-left for the key    3
+transmitted            10
+  bases disagreed       3   dropped at sifting
+  bases agreed          7   = the sifted bits
+      sacrificed        4   announced openly, so spent either way
+      left for the key  3   <- the key
 ```
 
 **Two losses.** Half the rounds die at sifting, because the bases disagreed. More
