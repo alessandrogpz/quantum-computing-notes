@@ -1,7 +1,7 @@
 # Slides
 
 A ~15 minute talk covering the fundamentals through to key distribution.
-22 slides, written in [Marp](https://marp.app) markdown.
+23 slides, written in [Marp](https://marp.app) markdown.
 
 - `slides.md` — the deck
 - `images/` — generated, do not edit by hand
@@ -31,13 +31,14 @@ circuit on a slide cannot drift from the code that runs it.
 | 6–7 | Worked examples: separable, then entangled | the core of the talk |
 | 8 | **Gates** — section break | |
 | 9–11 | $I$ and $Z$, $X$ and $Y$, Hadamard | follows `02_Gates/Single_Qubit_Gates.md` |
-| 12 | Involutions | follows `02_Gates/Involutions.md` |
-| 13–14 | CNOT, and a measured Bell pair | |
-| 15–16 | Superdense coding | |
-| 17–18 | Teleportation | |
-| 19–20 | BB84 | |
-| 21 | E91 | |
-| 22 | Recap | |
+| 12 | Why Hadamard specifically | |
+| 13 | Involutions | follows `02_Gates/Involutions.md` |
+| 14–15 | CNOT, and a measured Bell pair | |
+| 16–17 | Superdense coding | |
+| 18–19 | Teleportation | |
+| 20–21 | BB84 | |
+| 22 | E91 | |
+| 23 | Recap | |
 
 Slides 6 and 7 are the ones worth slowing down on — everything after them is an
 application of the same test.

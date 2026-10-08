@@ -194,6 +194,45 @@ In a diagram, a one-qubit gate is a square with its letter in it:
 
 ---
 
+## Why Hadamard, specifically?
+
+The $\tfrac{1}{\sqrt2}$ is not a choice. Without it $\begin{bmatrix}1&1\cr1&-1\end{bmatrix}|0\rangle$ has length$^2 = 2$,
+so the probabilities would sum to 2. Every gate must preserve length.
+
+<div class="cols">
+
+<div>
+
+**Plenty of gates make superposition:**
+
+| | $P(0)$ | $P(1)$ |
+| :--- | :-: | :-: |
+| $R_y(\pi/3)\vert 0\rangle$ | 0.75 | 0.25 |
+| $R_y(\pi/2)\vert 0\rangle$ | 0.50 | 0.50 |
+| $R_y(2\pi/3)\vert 0\rangle$ | 0.25 | 0.75 |
+
+$R_y(\pi/2)$ gives the **same** equal superposition as $H$ does from $|0\rangle$.
+
+</div>
+
+<div>
+
+**But only $H$ undoes itself:**
+
+$$H^2 = I \qquad R_y(\pi/2)^2 = R_y(\pi) \neq I$$
+
+They agree on $|0\rangle$ and differ on $|1\rangle$ — that difference *is* the involution.
+
+$H$ is a **basis change** between $Z$ and $X$, and swapping bases twice returns you home.
+
+</div>
+
+</div>
+
+<span class="small">Every protocol here leans on that: the Bell circuit, Bob's decoder, BB84's $X$-basis measurement.</span>
+
+---
+
 <!-- _class: involution -->
 
 ## Involutions — gates that undo themselves
