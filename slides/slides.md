@@ -443,9 +443,35 @@ Alice keeps `1 1 0 0 0`, Bob keeps `1 1 0 0 0`: a secret neither of them sent.
 
 ---
 
+<!-- _class: run -->
+
+## BB84 — what actually becomes key
+
+A real run of `bb84.py --rounds 10`:
+
+```
+transmitted        10
+bases agreed        7     <- sifting: ~50% on average
+sacrificed to test  4     <- announced openly, so spent either way
+left for the key    3
+```
+
+**Two losses.** Half the rounds die at sifting, because the bases disagreed. More
+are sacrificed to test for Eve — once announced they are public, so they are spent
+whatever they show. Roughly **a quarter** of transmitted qubits become key.
+
+Each compared bit is an independent $\tfrac34$ chance Eve slips past, so detection
+needs volume:
+
+| bits compared | 4 | 50 | 126 |
+| :--- | :-: | :-: | :-: |
+| Eve escapes undetected | 32% | $6\times10^{-7}$ | $2\times10^{-16}$ |
+
+---
+
 ## BB84 — what Eve costs
 
-![width:560px](images/circuit_bb84_eve.png)
+![width:470px](images/circuit_bb84_eve.png)
 
 Eve cannot copy the qubit (**no-cloning**), so she must measure — and guess a basis.
 
@@ -453,9 +479,10 @@ She is wrong half the time, and then Bob errs half of *those*:
 
 $$\text{QBER} = \tfrac12 \times \tfrac12 = 25\text{\%}$$
 
-Alice and Bob sacrifice some bits, compare them openly, and abort above **11%**.
+She does **not** change the sifting rate — only the error rate on the bits that
+survive: $0\% \to 25\%$. Alice and Bob compare some openly, and **abort above 11%**.
 
-<span class="small">Her gain: 75% of the key. Useless, because the key is discarded.</span>
+<span class="small">Her gain: 75% of the key — useless, because the key is discarded.</span>
 
 ---
 

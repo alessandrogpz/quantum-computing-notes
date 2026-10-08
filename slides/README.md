@@ -1,7 +1,7 @@
 # Slides
 
 A ~15 minute talk covering the fundamentals through to key distribution.
-24 slides, written in [Marp](https://marp.app) markdown.
+25 slides, written in [Marp](https://marp.app) markdown.
 
 - `slides.md` — the deck
 - `images/` — generated, do not edit by hand
@@ -36,11 +36,12 @@ circuit on a slide cannot drift from the code that runs it.
 | 14–15 | CNOT, and a measured Bell pair | |
 | 16–17 | Superdense coding | |
 | 18–19 | Teleportation | |
-| 20 | BB84 — reading the circuit | |
+| 20 | BB84 — reading the circuit, and why the order matters | |
 | 21 | BB84 — eight rounds worked through | the one that makes it click |
-| 22 | BB84 — what Eve costs | |
-| 23 | E91 | |
-| 24 | Recap | |
+| 22 | BB84 — what actually becomes key | |
+| 23 | BB84 — what Eve costs | |
+| 24 | E91 | |
+| 25 | Recap | |
 
 Slides 6 and 7 are the ones worth slowing down on — everything after them is an
 application of the same test.
