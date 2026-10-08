@@ -1,4 +1,6 @@
 # Python
+temp.py
+scratch*.py
 *.whl
 *.tar.gz
 __pycache__/
