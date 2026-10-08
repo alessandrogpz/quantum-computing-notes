@@ -15,6 +15,8 @@ style: |
   section.gates table { width: 100%; font-size: 1.12em; }
   section.involution .cols { grid-template-columns: 1fr 1fr; align-items: start; }
   section.involution table { width: 100%; font-size: 0.86em; }
+  section.run table { font-size: 0.8em; }
+  section.run td, section.run th { padding: 0.12em 0.55em; }
   section.involution td, section.involution th { padding: 0.18em 0.5em; }
 ---
 
@@ -412,6 +414,30 @@ $Z = \lbrace|0\rangle, |1\rangle\rbrace$ and $X = \lbrace|+\rangle, |-\rangle\rb
 </div>
 
 </div>
+
+---
+
+<!-- _class: run -->
+
+## BB84 — eight rounds, start to finish
+
+Alice flips **two** coins (bit, basis). Bob flips **one** (basis), blind.
+
+| # | A bit | A base | sends | B base | B reads | match? | |
+| :-: | :-: | :-: | :-: | :-: | :-: | :-: | :--- |
+| 0 | 1 | $X$ | $\vert-\rangle$ | $X$ | **1** | yes | **key** |
+| 1 | 0 | $Z$ | $\vert 0\rangle$ | $X$ | 0 | no | discard — right by luck |
+| 2 | 0 | $Z$ | $\vert 0\rangle$ | $X$ | 1 | no | discard — **wrong** |
+| 3 | 1 | $Z$ | $\vert 1\rangle$ | $Z$ | **1** | yes | **key** |
+| 4 | 0 | $X$ | $\vert+\rangle$ | $X$ | **0** | yes | **key** |
+| 5 | 0 | $Z$ | $\vert 0\rangle$ | $Z$ | **0** | yes | **key** |
+| 6 | 0 | $Z$ | $\vert 0\rangle$ | $Z$ | **0** | yes | **key** |
+| 7 | 0 | $Z$ | $\vert 0\rangle$ | $X$ | 0 | no | discard |
+
+They announce their **bases** publicly — never the bits — and drop the mismatches.
+Alice keeps `1 1 0 0 0`, Bob keeps `1 1 0 0 0`: a secret neither of them sent.
+
+<span class="small">Rounds 1 and 2 are the point — same choices, different outcomes. On a mismatch Bob still gets a bit, just a worthless one, and nobody knows which until the bases are announced.</span>
 
 ---
 
