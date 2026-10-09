@@ -6,7 +6,8 @@ A ~15 minute talk covering the fundamentals through to key distribution.
 - `slides.md` — the deck
 - `images/` — generated, do not edit by hand
 - `deck.pdf` — the rendered deck, what you present from
-- `deck.pptx` — PowerPoint, if you need it
+- `deck.pptx` — PowerPoint, one rendered image per slide
+- `deck-editable.pptx` — PowerPoint with real text, for Google Slides
 
 ## Rendering
 
@@ -18,9 +19,25 @@ npx @marp-team/marp-cli slides.md -o deck.pdf --allow-local-files --no-stdin
 Swap `-o deck.pdf` for `-o slides.html` to get a deck that runs in a browser,
 `-o deck.pptx` for PowerPoint, or `--preview` to watch it live while editing.
 
-The `.pptx` embeds one rendered image per slide, so it opens anywhere but the text
-is not editable in PowerPoint. Editing happens in `slides.md`. (Marp can emit
-editable shapes with `--pptx-editable`, but that needs LibreOffice installed.) `--no-stdin` matters: without it Marp
+### Which PowerPoint file
+
+Two exist, and they trade off against each other:
+
+| | `deck.pptx` | `deck-editable.pptx` |
+| :--- | :--- | :--- |
+| contents | one image per slide | real text shapes |
+| maths | pixel-perfect | subscripts collide with ket bars, loose spacing |
+| in Google Slides | soft — Slides resamples the bitmap | crisp, and editable |
+| size | 4.8 MB | 0.5 MB |
+
+Use the image version to present from, and the editable one only if the deck has
+to live inside Google Slides or PowerPoint. The editable build needs LibreOffice:
+
+```bash
+npx @marp-team/marp-cli slides.md -o deck-editable.pptx --allow-local-files --no-stdin --pptx-editable
+```
+
+For presenting, `deck.pdf` beats both — no conversion, nothing to degrade. `--no-stdin` matters: without it Marp
 reads stdin instead of the file when run non-interactively.
 
 Figures come from the protocol scripts in `03_Protocols` and `04_Algorithms`, so a
