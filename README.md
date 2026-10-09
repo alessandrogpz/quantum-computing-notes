@@ -60,3 +60,12 @@ cp .env.example .env
 
 Results from real hardware are noisy — expect a weak signal rather than clean
 output, and check the answer classically where you can.
+
+---
+
+## Links
+
+- [IBM Quantum Composer](https://quantum.cloud.ibm.com/composer?initial=N4IgjghgzgtiBcIDyAFAogOQIoEEDKAsgAQBMAdAAwDcAOgHYCWdAxgDYCuAJgKZE3jdWDAEYBGMk2b9adMACduAcyJgA2iQC6M5guXN1W%2BgAsVqioZYAPU%2BYA0p0ReEQ5chtzk2Lza2rsOLEz8LGG5odgUAogBaAD4ifUcZUPDI4Jj4-XMZEFsQOghQhBAAVToAFwZy1m5OBIY5ZnYqkABfIA) — the drag-and-drop circuit
+  builder, with a saved circuit in the URL
+- [Build and run your first quantum program](https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today/build-and-run-your-first-quantum-program) — IBM's
+  *Use a quantum computer today* course
