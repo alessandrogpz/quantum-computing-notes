@@ -11,6 +11,8 @@ style: |
   code { font-size: 0.85em; }
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; align-items: center; }
   .small { font-size: 0.82em; }
+  section.axis { padding-right: 300px; }
+  section.axis img { position: absolute; right: 45px; top: 120px; }
   section.gates .cols { grid-template-columns: 1.05fr 1fr; align-items: start; }
   section.gates table { width: 100%; font-size: 1.12em; }
   section.involution .cols { grid-template-columns: 1fr 1fr; align-items: start; }
@@ -146,7 +148,11 @@ Now: how to **change** one — and how entanglement actually gets made.
 
 ---
 
+<!-- _class: axis -->
+
 ## $I$ and $Z$ — leave the magnitudes alone
+
+![width:240px](images/sphere_z.png)
 
 All of these act on $a_0|0\rangle + a_1|1\rangle$ in the standard basis.
 
@@ -164,7 +170,11 @@ visible once the qubit **interferes** with another — for instance after a Hada
 
 ---
 
+<!-- _class: axis -->
+
 ## $X$ and $Y$ — the two NOTs
+
+![width:230px](images/sphere_xy.png)
 
 Both exchange $|0\rangle$ and $|1\rangle$.
 
@@ -176,34 +186,7 @@ So $X$ is a pure swap; $Y$ swaps **and** changes the relative phase.
 
 <span class="small">The Pauli $Y$ is usually $-i$ times the matrix above, giving $\begin{bmatrix}0 & -i\cr i & 0\end{bmatrix}$. The real version is used here because these slides avoid complex numbers — but only the complex one squares to $I$. Qiskit's `qc.y()` applies the complex one.</span>
 
----
-
-## Why three Paulis, and why $2 \times 2$?
-
-![width:700px](images/pauli_axes.png)
-
-<div class="cols">
-
-<div>
-
-Spin happens in **three** directions — but they do not become one $3\times3$ matrix.
-They become **three separate $2\times2$ observables**, one per axis. That is what
-$X$, $Y$, $Z$ are, and why there are exactly three.
-
-</div>
-
-<div>
-
-The size comes from the number of **outcomes**, not directions. Measuring along
-*any* axis gives **two** results — so two amplitudes, so $2\times2$.
-
-A spin-1 particle has three outcomes, and really does need $3\times3$.
-
-</div>
-
-</div>
-
-<span class="small">The 3D is still there: $\langle X\rangle, \langle Y\rangle, \langle Z\rangle$ place two complex amplitudes on the unit sphere — the Bloch sphere.</span>
+<span class="small">Three spatial axes, so **three** Paulis — not one $3\times3$ matrix but three separate $2\times2$ ones. The size comes from the number of **outcomes**: measuring along any axis gives two.</span>
 
 ---
 

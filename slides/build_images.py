@@ -94,11 +94,16 @@ def bloch(ax, axis, poles, title):
     ax.set_xlim(-1.5, 1.5); ax.set_ylim(-1.5, 1.5)
     ax.set_title(title, fontsize=13, color=INK, pad=2)
 
-fig, axes = plt.subplots(1, 3, figsize=(12, 4.0))
-bloch(axes[0], "z", (r"$|0\rangle$", r"$|1\rangle$"), r"$Z$ measures along $z$")
-bloch(axes[1], "x", (r"$|-\rangle$", r"$|+\rangle$"), r"$X$ measures along $x$")
-bloch(axes[2], "y", (r"$|{+}i\rangle$", r"$|{-}i\rangle$"), r"$Y$ measures along $y$")
-save_fig(fig, "pauli_axes")
+# one sphere on its own, to sit beside the Z slide
+fig, ax = plt.subplots(figsize=(3.4, 3.6))
+bloch(ax, "z", (r"$|0\rangle$", r"$|1\rangle$"), r"$Z$ measures along $z$")
+save_fig(fig, "sphere_z")
+
+# two stacked, to sit beside the X and Y slide
+fig, axes = plt.subplots(2, 1, figsize=(3.4, 7.0))
+bloch(axes[0], "x", (r"$|-\rangle$", r"$|+\rangle$"), r"$X$ measures along $x$")
+bloch(axes[1], "y", (r"$|{+}i\rangle$", r"$|{-}i\rangle$"), r"$Y$ measures along $y$")
+save_fig(fig, "sphere_xy")
 
 # --- what the gates do, on the circle ---
 fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.0))

@@ -1,7 +1,7 @@
 # Slides
 
 A ~15 minute talk covering the fundamentals through to key distribution.
-28 slides, written in [Marp](https://marp.app) markdown.
+27 slides, written in [Marp](https://marp.app) markdown.
 
 - `slides.md` — the deck
 - `images/` — generated, do not edit by hand
@@ -35,22 +35,20 @@ circuit on a slide cannot drift from the code that runs it.
 | 4–5 | Tensor product, the $ru$ vs $st$ test | |
 | 6–7 | Worked examples: separable, then entangled | the core of the talk |
 | 8 | **Gates** — section break | |
-| 9–10 | $I$ and $Z$, $X$ and $Y$ | follows `02_Gates/Single_Qubit_Gates.md` |
-| 11 | Why three Paulis, and why $2\times2$ | the Bloch sphere, in passing |
-| 12 | Hadamard | |
-| 13 | Why Hadamard specifically | |
-| 14 | Involutions | follows `02_Gates/Involutions.md` |
-| 15–16 | CNOT, and a measured Bell pair | |
-| 17 | **Protocols** — section break | |
-| 18–19 | Superdense coding | |
-| 20–21 | Teleportation | |
-| 22 | **Key distribution** — section break | |
-| 23 | BB84 — reading the circuit, and why the order matters | |
-| 24 | BB84 — eight rounds worked through | the one that makes it click |
-| 25 | BB84 — what actually becomes key | |
-| 26 | BB84 — what Eve costs | |
-| 27 | E91 | |
-| 28 | Recap | |
+| 9–11 | $I$ and $Z$, $X$ and $Y$, Hadamard | follows `02_Gates/Single_Qubit_Gates.md` |
+| 12 | Why Hadamard specifically | |
+| 13 | Involutions | follows `02_Gates/Involutions.md` |
+| 14–15 | CNOT, and a measured Bell pair | |
+| 16 | **Protocols** — section break | |
+| 17–18 | Superdense coding | |
+| 19–20 | Teleportation | |
+| 21 | **Key distribution** — section break | |
+| 22 | BB84 — reading the circuit, and why the order matters | |
+| 23 | BB84 — eight rounds worked through | the one that makes it click |
+| 24 | BB84 — what actually becomes key | |
+| 25 | BB84 — what Eve costs | |
+| 26 | E91 | |
+| 27 | Recap | |
 
 Three section breaks split the talk into acts: foundations, gates, then the
 protocols — first moving information, then detecting an eavesdropper.
