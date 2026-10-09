@@ -93,6 +93,16 @@ The `If` boxes at the end are Bob's correction gate $G$ — $X$ when `c1` is 1,
 $Z$ when `c0` is 1, both (i.e. $ZX \sim Y$) when both are. See the figure at the
 top of this note.
 
+## On hardware
+
+Teleportation is the only protocol here that needs a **dynamic circuit** — Bob's
+correction depends on a measurement taken moments earlier, so the decision happens
+on the device rather than when the circuit is built.
+
+That has a cost: IBM does not allow dynamical decoupling or gate twirling on
+circuits with control flow, so a `--ibm` run of teleportation gets **no error
+suppression** while the other protocols do. Expect it to be noisier.
+
 ## Use cases
 
 - **Quantum repeaters** — the same as a signal amplifier for classical bits, but

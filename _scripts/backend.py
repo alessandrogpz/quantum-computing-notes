@@ -13,6 +13,7 @@ in the repo root (copy .env.example and fill in QISKIT_API_KEY).
 import pathlib
 
 from qiskit import transpile
+from qiskit.circuit.controlflow import ControlFlowOp
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 ENV = ROOT / ".env"
@@ -77,9 +78,15 @@ def run(circuit, shots: int = 1024, ibm: bool = False, backend_name: str | None 
     print(f"  backend {backend.name}, depth {isa.depth()}, "
           f"{sum(n for g, n in isa.count_ops().items() if g in ('cz', 'ecr', 'cx'))} 2q gates")
 
+    # Teleportation uses classical feed-forward (if_test), and IBM refuses
+    # dynamical decoupling on circuits with control flow. Skip it for those.
+    dynamic = any(isinstance(i.operation, ControlFlowOp) for i in isa.data)
+
     sampler = SamplerV2(mode=backend)
-    sampler.options.dynamical_decoupling.enable = True
-    sampler.options.twirling.enable_gates = True
+    sampler.options.dynamical_decoupling.enable = not dynamic
+    sampler.options.twirling.enable_gates = not dynamic
+    if dynamic:
+        print("  dynamic circuit: error suppression off (not allowed with control flow)")
     job = sampler.run([(isa, None, shots)])
     print(f"  job {job.job_id()}")
     return getattr(job.result()[0].data, creg).get_counts()
