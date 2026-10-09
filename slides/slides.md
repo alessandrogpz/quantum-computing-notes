@@ -178,6 +178,35 @@ So $X$ is a pure swap; $Y$ swaps **and** changes the relative phase.
 
 ---
 
+## Why three Paulis, and why $2 \times 2$?
+
+![width:700px](images/pauli_axes.png)
+
+<div class="cols">
+
+<div>
+
+Spin happens in **three** directions — but they do not become one $3\times3$ matrix.
+They become **three separate $2\times2$ observables**, one per axis. That is what
+$X$, $Y$, $Z$ are, and why there are exactly three.
+
+</div>
+
+<div>
+
+The size comes from the number of **outcomes**, not directions. Measuring along
+*any* axis gives **two** results — so two amplitudes, so $2\times2$.
+
+A spin-1 particle has three outcomes, and really does need $3\times3$.
+
+</div>
+
+</div>
+
+<span class="small">The 3D is still there: $\langle X\rangle, \langle Y\rangle, \langle Z\rangle$ place two complex amplitudes on the unit sphere — the Bloch sphere.</span>
+
+---
+
 ## Hadamard — into superposition
 
 $$H = \begin{bmatrix} \tfrac{1}{\sqrt2} & \tfrac{1}{\sqrt2} \cr \tfrac{1}{\sqrt2} & -\tfrac{1}{\sqrt2} \end{bmatrix} = \tfrac{1}{\sqrt2}\begin{bmatrix}1 & 1\cr 1 & -1\end{bmatrix} \qquad \begin{aligned} H|0\rangle &= \tfrac{1}{\sqrt2}\big(|0\rangle + |1\rangle\big) \cr H|1\rangle &= \tfrac{1}{\sqrt2}\big(|0\rangle - |1\rangle\big) \end{aligned}$$

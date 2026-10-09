@@ -69,6 +69,37 @@ arrow(ax, -math.pi / 4, r"$|-\rangle$", ACCENT)
 ax.set_title("Real qubit states live on a circle", fontsize=13, color=INK, pad=2)
 save_fig(fig, "circle_basis")
 
+# --- the three Pauli axes, each with its own pair of outcomes ---
+from matplotlib.patches import Ellipse  # noqa: E402
+
+def bloch(ax, axis, poles, title):
+    """A sphere silhouette with one axis picked out."""
+    th = np.linspace(0, 2 * np.pi, 400)
+    ax.plot(np.cos(th), np.sin(th), color="#d8d8d8", lw=1.2)
+    ax.add_patch(Ellipse((0, 0), 2, 0.62, fill=False, color="#e6e6e6", lw=1))
+
+    ends = {"z": ((0, 1), (0, -1)), "x": ((-0.78, -0.26), (0.78, 0.26)),
+            "y": ((0.80, -0.22), (-0.80, 0.22))}
+    for name, (p1, p2) in ends.items():
+        hot = name == axis
+        ax.plot(*zip(p1, p2), color=ACCENT if hot else "#dcdcdc",
+                lw=2.6 if hot else 1.2, zorder=3 if hot else 1)
+        if hot:
+            for (x, y), lab in zip((p1, p2), poles):
+                ax.plot([x], [y], "o", color=ACCENT, ms=7, zorder=4)
+                off = 0.22 if y >= 0 else -0.22
+                ax.text(x * 1.1, y * 1.1 + off, lab, color=ACCENT,
+                        ha="center", va="center", fontsize=13, zorder=5)
+    ax.set_aspect("equal"); ax.axis("off")
+    ax.set_xlim(-1.5, 1.5); ax.set_ylim(-1.5, 1.5)
+    ax.set_title(title, fontsize=13, color=INK, pad=2)
+
+fig, axes = plt.subplots(1, 3, figsize=(12, 4.0))
+bloch(axes[0], "z", (r"$|0\rangle$", r"$|1\rangle$"), r"$Z$ measures along $z$")
+bloch(axes[1], "x", (r"$|-\rangle$", r"$|+\rangle$"), r"$X$ measures along $x$")
+bloch(axes[2], "y", (r"$|{+}i\rangle$", r"$|{-}i\rangle$"), r"$Y$ measures along $y$")
+save_fig(fig, "pauli_axes")
+
 # --- what the gates do, on the circle ---
 fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.0))
 
