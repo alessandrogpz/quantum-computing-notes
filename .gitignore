@@ -15,6 +15,10 @@ slides/slides.html
 node_modules/
 package-lock.json
 
+# Desktop shortcuts dropped into the folder
+*.desktop
+IBM Quantum*
+
 # OS generated files
 .DS_Store
 Thumbs.db
